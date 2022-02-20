@@ -1,0 +1,14 @@
+".\Objects\main.obj",
+".\Objects\mystring.obj",
+".\Objects\Adc.obj",
+".\Objects\Eeprom.obj",
+".\Objects\WIFI.obj",
+".\Objects\Fingerprint.obj",
+".\Objects\Uart.obj",
+".\Objects\System.obj",
+".\Objects\ST7789V.obj",
+".\Objects\SPI.obj",
+".\Objects\GUI.obj",
+".\Objects\Time.obj" 
+TO ".\Objects\Ð¬¹ñÖ÷¿Ø" 
+PRINT(".\Listings\Ð¬¹ñÖ÷¿Ø.m51")

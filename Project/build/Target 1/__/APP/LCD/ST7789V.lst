@@ -1,0 +1,984 @@
+C51 COMPILER V9.57.0.0   ST7789V                                                           02/19/2022 23:37:22 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE ST7789V
+OBJECT MODULE PLACED IN .\build\Target 1\__\APP\LCD\ST7789V.o
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.exe .\..\APP\LCD\ST7789V.C PRINT(.\build\Target 1\__\APP\LCD\ST7789V.lst) OMF2
+                    - TABS(4) CODE NOCOND SYMBOLS OPTIMIZE(8,SPEED) SMALL ROM(LARGE) INCDIR(D:\keil5\C51\INC\Atmel;.\..\APP;.\..;.\..\APP\ADC
+                    -;.\..\APP\Eeprom;.\..\APP\Fingerprint;.\..\APP\System;.\..\APP\Uart;.\..\APP\WIFI;.\..\APP\LCD;.\..\APP\SPI;.\..\APP\GUI
+                    -;.\..\APP\Time;.\..\APP\H;D:\keil5\C51\INC) DEFINE(__UVISION_VERSION=526) OBJECT(.\build\Target 1\__\APP\LCD\ST7789V.o)
+
+line level    source
+
+   1          #include "ST7789V.h"
+   2          #include "SPI.h"
+   3          SPI xdata LcdSpi;
+   4          LCDIO xdata Lcd_Power = {LCD_BACK,LCD_POWER,LCD_RES};
+   5          
+   6          void Delay1ms()     //@33.1776MHz
+   7          {
+   8   1          unsigned char xdata i, j;
+   9   1      
+  10   1          _nop_();
+  11   1          _nop_();
+  12   1          i = 33;
+  13   1          j = 66;
+  14   1          do
+  15   1          {
+  16   2              while (--j);
+  17   2          } while (--i);
+  18   1      }
+  19          
+  20          void LCD_CS(uchar dat)
+  21          {
+  22   1          LCDCS = dat;
+  23   1      }
+  24          void LCD_MOSI(uchar dat)
+  25          {
+  26   1          LCDMOSI = dat;
+  27   1      }
+  28          void LCD_SCLK(uchar dat)
+  29          {
+  30   1          LCDSCLK = dat;
+  31   1      }
+  32          void LCD_BACK(enum LCD dat)
+  33          {
+  34   1          LCDBACK = dat;
+  35   1      }
+  36          void LCD_POWER(enum LCD dat)
+  37          {
+  38   1          LCDPOWER = dat;
+  39   1      }
+  40          void LCD_RES(enum LCD dat)
+  41          {
+  42   1          LCDRES = dat;
+  43   1      }
+  44          
+  45          void LcdSpiInit()
+  46          {
+  47   1          LcdSpi.SpiIo.CS = LCD_CS;
+  48   1          LcdSpi.SpiIo.MOSI = LCD_MOSI;
+  49   1          LcdSpi.SpiIo.SCLK = LCD_SCLK;
+  50   1          LcdSpi.SPIWrite = SpiWrite;
+  51   1      }
+  52          
+C51 COMPILER V9.57.0.0   ST7789V                                                           02/19/2022 23:37:22 PAGE 2   
+
+  53          void LCD_Write_Data(uchar dat)
+  54          {
+  55   1          LcdSpi.SPIWrite(&LcdSpi.SpiIo,dat);
+  56   1      }
+  57          
+  58          void LCD_Write_Word(uint dat)//LCD写字
+  59          {
+  60   1          LCD_Write_Data(dat);
+  61   1          LCD_Write_Data(dat>>8);
+  62   1      }
+  63          
+  64          void LCD_Write_Cmd(uchar cmd)
+  65          {
+  66   1          LCD_DC = 0;
+  67   1          LCD_Write_Data(cmd);
+  68   1          LCD_DC = 1;
+  69   1      }
+  70          
+  71          void LCD_Addr_Set(uint x1,uint y1,uint x2,uint y2)
+  72          {
+  73   1          LCD_Write_Cmd(0x2a);
+  74   1          LCD_Write_Word(x1);
+  75   1          LCD_Write_Word(x2);
+  76   1          LCD_Write_Cmd(0x2b);
+  77   1          LCD_Write_Word(y1);
+  78   1          LCD_Write_Word(y2);
+  79   1          LCD_Write_Cmd(0x2c);
+  80   1      }
+  81          
+  82          void LCD_Init()
+  83          {
+  84   1          Lcd_Power.RES(off);  //复位
+  85   1          Delay1ms();
+  86   1          Lcd_Power.RES(on);
+  87   1          Delay1ms();
+  88   1          Lcd_Power.BACK(on);//打开背光
+  89   1          Delay1ms();
+  90   1          LCD_Write_Cmd(0x11);
+  91   1          Delay1ms();
+  92   1      //************* Start Initial Sequence **********// 
+  93   1      //------------------------------display and color format setting--------------------------------//
+  94   1      
+  95   1          LCD_Write_Cmd(0X36);// Memory Access Control
+  96   1          if(USE_HORIZONTAL==0)LCD_Write_Data(0x00);
+  97   1          else if(USE_HORIZONTAL==1)LCD_Write_Data(0xC0);
+  98   1          else if(USE_HORIZONTAL==2)LCD_Write_Data(0x70);
+  99   1          else LCD_Write_Data(0xA0);
+ 100   1          LCD_Write_Cmd(0X3A);
+ 101   1          LCD_Write_Data(0X05);
+ 102   1      //--------------------------------ST7789S Frame rate setting-------------------------
+ 103   1      
+ 104   1          LCD_Write_Cmd(0xb2);
+ 105   1          LCD_Write_Data(0x0c);
+ 106   1          LCD_Write_Data(0x0c);
+ 107   1          LCD_Write_Data(0x00);
+ 108   1          LCD_Write_Data(0x33);
+ 109   1          LCD_Write_Data(0x33);
+ 110   1          LCD_Write_Cmd(0xb7);
+ 111   1          LCD_Write_Data(0x35);
+ 112   1          //---------------------------------ST7789S Power setting-----------------------------
+ 113   1      
+ 114   1          LCD_Write_Cmd(0xbb);
+C51 COMPILER V9.57.0.0   ST7789V                                                           02/19/2022 23:37:22 PAGE 3   
+
+ 115   1          LCD_Write_Data(0x35);
+ 116   1          LCD_Write_Cmd(0xc0);
+ 117   1          LCD_Write_Data(0x2c);
+ 118   1          LCD_Write_Cmd(0xc2);
+ 119   1          LCD_Write_Data(0x01);
+ 120   1          LCD_Write_Cmd(0xc3);
+ 121   1          LCD_Write_Data(0x13);
+ 122   1          LCD_Write_Cmd(0xc4);
+ 123   1          LCD_Write_Data(0x20);
+ 124   1          LCD_Write_Cmd(0xc6);
+ 125   1          LCD_Write_Data(0x0f);
+ 126   1          LCD_Write_Cmd(0xca);
+ 127   1          LCD_Write_Data(0x0f);
+ 128   1          LCD_Write_Cmd(0xc8);
+ 129   1          LCD_Write_Data(0x08);
+ 130   1          LCD_Write_Cmd(0x55);
+ 131   1          LCD_Write_Data(0x90);
+ 132   1          LCD_Write_Cmd(0xd0);
+ 133   1          LCD_Write_Data(0xa4);
+ 134   1          LCD_Write_Data(0xa1);
+ 135   1          //--------------------------------ST7789S gamma setting------------------------------
+ 136   1          LCD_Write_Cmd(0xe0);
+ 137   1          LCD_Write_Data(0xd0);
+ 138   1          LCD_Write_Data(0x00);
+ 139   1          LCD_Write_Data(0x06);
+ 140   1          LCD_Write_Data(0x09);
+ 141   1          LCD_Write_Data(0x0b);
+ 142   1          LCD_Write_Data(0x2a);
+ 143   1          LCD_Write_Data(0x3c);
+ 144   1          LCD_Write_Data(0x55);
+ 145   1          LCD_Write_Data(0x4b);
+ 146   1          LCD_Write_Data(0x08);
+ 147   1          LCD_Write_Data(0x16);
+ 148   1          LCD_Write_Data(0x14);
+ 149   1          LCD_Write_Data(0x19);
+ 150   1          LCD_Write_Data(0x20);
+ 151   1          LCD_Write_Cmd(0xe1);
+ 152   1          LCD_Write_Data(0xd0);
+ 153   1          LCD_Write_Data(0x00);
+ 154   1          LCD_Write_Data(0x06);
+ 155   1          LCD_Write_Data(0x09);
+ 156   1          LCD_Write_Data(0x0b);
+ 157   1          LCD_Write_Data(0x29);
+ 158   1          LCD_Write_Data(0x36);
+ 159   1          LCD_Write_Data(0x54);
+ 160   1          LCD_Write_Data(0x4b);
+ 161   1          LCD_Write_Data(0x0d);
+ 162   1          LCD_Write_Data(0x16);
+ 163   1          LCD_Write_Data(0x14);
+ 164   1          LCD_Write_Data(0x21);
+ 165   1          LCD_Write_Data(0x20);
+ 166   1          LCD_Write_Cmd(0x29);
+ 167   1      }
+C51 COMPILER V9.57.0.0   ST7789V                                                           02/19/2022 23:37:22 PAGE 4   
+
+ASSEMBLY LISTING OF GENERATED OBJECT CODE
+
+
+             ; FUNCTION L?0025 (BEGIN)
+0000 120000      E     LCALL   ?C?ICALL2
+             ; FUNCTION Delay1ms (BEGIN)
+                                           ; SOURCE LINE # 6
+                                           ; SOURCE LINE # 7
+                                           ; SOURCE LINE # 10
+0003 00                NOP     
+                                           ; SOURCE LINE # 11
+0004 00                NOP     
+                                           ; SOURCE LINE # 12
+0005 900000      R     MOV     DPTR,#i
+0008 7421              MOV     A,#021H
+000A F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 13
+000B A3                INC     DPTR
+000C 7442              MOV     A,#042H
+000E F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 15
+000F         ?C0004:
+                                           ; SOURCE LINE # 16
+000F 900000      R     MOV     DPTR,#j
+0012 E0                MOVX    A,@DPTR
+0013 14                DEC     A
+0014 F0                MOVX    @DPTR,A
+0015 70F8              JNZ     ?C0004
+                                           ; SOURCE LINE # 17
+0017 900000      R     MOV     DPTR,#i
+001A E0                MOVX    A,@DPTR
+001B 14                DEC     A
+001C F0                MOVX    @DPTR,A
+001D 70F0              JNZ     ?C0004
+                                           ; SOURCE LINE # 18
+001F 22                RET     
+             ; FUNCTION Delay1ms (END)
+
+             ; FUNCTION _LCD_CS (BEGIN)
+                                           ; SOURCE LINE # 20
+;---- Variable 'dat' assigned to Register 'R7' ----
+                                           ; SOURCE LINE # 21
+                                           ; SOURCE LINE # 22
+0000 EF                MOV     A,R7
+0001 24FF              ADD     A,#0FFH
+0003 92C9              MOV     LCDCS,C
+                                           ; SOURCE LINE # 23
+0005 22                RET     
+             ; FUNCTION _LCD_CS (END)
+
+             ; FUNCTION _LCD_MOSI (BEGIN)
+                                           ; SOURCE LINE # 24
+;---- Variable 'dat' assigned to Register 'R7' ----
+                                           ; SOURCE LINE # 25
+                                           ; SOURCE LINE # 26
+0000 EF                MOV     A,R7
+0001 24FF              ADD     A,#0FFH
+0003 92B3              MOV     LCDMOSI,C
+                                           ; SOURCE LINE # 27
+0005 22                RET     
+             ; FUNCTION _LCD_MOSI (END)
+
+C51 COMPILER V9.57.0.0   ST7789V                                                           02/19/2022 23:37:22 PAGE 5   
+
+             ; FUNCTION _LCD_SCLK (BEGIN)
+                                           ; SOURCE LINE # 28
+;---- Variable 'dat' assigned to Register 'R7' ----
+                                           ; SOURCE LINE # 29
+                                           ; SOURCE LINE # 30
+0000 EF                MOV     A,R7
+0001 24FF              ADD     A,#0FFH
+0003 92C8              MOV     LCDSCLK,C
+                                           ; SOURCE LINE # 31
+0005 22                RET     
+             ; FUNCTION _LCD_SCLK (END)
+
+             ; FUNCTION _LCD_BACK (BEGIN)
+                                           ; SOURCE LINE # 32
+;---- Variable 'dat' assigned to Register 'R7' ----
+                                           ; SOURCE LINE # 33
+                                           ; SOURCE LINE # 34
+0000 EF                MOV     A,R7
+0001 24FF              ADD     A,#0FFH
+0003 92A1              MOV     LCDBACK,C
+                                           ; SOURCE LINE # 35
+0005 22                RET     
+             ; FUNCTION _LCD_BACK (END)
+
+             ; FUNCTION _LCD_POWER (BEGIN)
+                                           ; SOURCE LINE # 36
+;---- Variable 'dat' assigned to Register 'R7' ----
+                                           ; SOURCE LINE # 37
+                                           ; SOURCE LINE # 38
+0000 EF                MOV     A,R7
+0001 24FF              ADD     A,#0FFH
+0003 92A0              MOV     LCDPOWER,C
+                                           ; SOURCE LINE # 39
+0005 22                RET     
+             ; FUNCTION _LCD_POWER (END)
+
+             ; FUNCTION _LCD_RES (BEGIN)
+                                           ; SOURCE LINE # 40
+;---- Variable 'dat' assigned to Register 'R7' ----
+                                           ; SOURCE LINE # 41
+                                           ; SOURCE LINE # 42
+0000 EF                MOV     A,R7
+0001 24FF              ADD     A,#0FFH
+0003 92C0              MOV     LCDRES,C
+                                           ; SOURCE LINE # 43
+0005 22                RET     
+             ; FUNCTION _LCD_RES (END)
+
+             ; FUNCTION LcdSpiInit (BEGIN)
+                                           ; SOURCE LINE # 45
+                                           ; SOURCE LINE # 46
+                                           ; SOURCE LINE # 47
+0000 900000      R     MOV     DPTR,#LcdSpi
+0003 74FF              MOV     A,#0FFH
+0005 F0                MOVX    @DPTR,A
+0006 A3                INC     DPTR
+0007 7400        R     MOV     A,#HIGH _LCD_CS
+0009 F0                MOVX    @DPTR,A
+000A A3                INC     DPTR
+000B 7400        R     MOV     A,#LOW _LCD_CS
+000D F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 48
+C51 COMPILER V9.57.0.0   ST7789V                                                           02/19/2022 23:37:22 PAGE 6   
+
+000E 900000      R     MOV     DPTR,#LcdSpi+06H
+0011 74FF              MOV     A,#0FFH
+0013 F0                MOVX    @DPTR,A
+0014 A3                INC     DPTR
+0015 7400        R     MOV     A,#HIGH _LCD_MOSI
+0017 F0                MOVX    @DPTR,A
+0018 A3                INC     DPTR
+0019 7400        R     MOV     A,#LOW _LCD_MOSI
+001B F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 49
+001C 900000      R     MOV     DPTR,#LcdSpi+03H
+001F 74FF              MOV     A,#0FFH
+0021 F0                MOVX    @DPTR,A
+0022 A3                INC     DPTR
+0023 7400        R     MOV     A,#HIGH _LCD_SCLK
+0025 F0                MOVX    @DPTR,A
+0026 A3                INC     DPTR
+0027 7400        R     MOV     A,#LOW _LCD_SCLK
+0029 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 50
+002A 900000      R     MOV     DPTR,#LcdSpi+09H
+002D 74FF              MOV     A,#0FFH
+002F F0                MOVX    @DPTR,A
+0030 A3                INC     DPTR
+0031 7400        E     MOV     A,#HIGH _SpiWrite
+0033 F0                MOVX    @DPTR,A
+0034 A3                INC     DPTR
+0035 7400        E     MOV     A,#LOW _SpiWrite
+0037 F0                MOVX    @DPTR,A
+                                           ; SOURCE LINE # 51
+0038 22                RET     
+             ; FUNCTION LcdSpiInit (END)
+
+             ; FUNCTION _LCD_Write_Data (BEGIN)
+                                           ; SOURCE LINE # 53
+;---- Variable 'dat' assigned to Register 'R5' ----
+0000 AD07              MOV     R5,AR7
+                                           ; SOURCE LINE # 54
+                                           ; SOURCE LINE # 55
+0002 7B01              MOV     R3,#01H
+0004 7A00        R     MOV     R2,#HIGH LcdSpi
+0006 7900        R     MOV     R1,#LOW LcdSpi
+0008 C002              PUSH    AR2
+000A 900000      R     MOV     DPTR,#LcdSpi+09H
+000D A3                INC     DPTR
+000E E0                MOVX    A,@DPTR
+000F FA                MOV     R2,A
+0010 A3                INC     DPTR
+0011 E0                MOVX    A,@DPTR
+0012 F582              MOV     DPL,A
+0014 8A83              MOV     DPH,R2
+0016 D002              POP     AR2
+0018 020000      E     LJMP    ?C?ICALL2
+             ; FUNCTION _LCD_Write_Data (END)
+
+             ; FUNCTION _LCD_Write_Word (BEGIN)
+                                           ; SOURCE LINE # 58
+0000 8E00        R     MOV     dat,R6
+0002 8F00        R     MOV     dat+01H,R7
+                                           ; SOURCE LINE # 59
+                                           ; SOURCE LINE # 60
+0004 120000      R     LCALL   _LCD_Write_Data
+C51 COMPILER V9.57.0.0   ST7789V                                                           02/19/2022 23:37:22 PAGE 7   
+
+                                           ; SOURCE LINE # 61
+0007 E500        R     MOV     A,dat
+0009 FF                MOV     R7,A
+000A 020000      R     LJMP    _LCD_Write_Data
+             ; FUNCTION _LCD_Write_Word (END)
+
+             ; FUNCTION _LCD_Write_Cmd (BEGIN)
+                                           ; SOURCE LINE # 64
+;---- Variable 'cmd' assigned to Register 'R7' ----
+                                           ; SOURCE LINE # 65
+                                           ; SOURCE LINE # 66
+0000 C2B4              CLR     LCD_DC
+                                           ; SOURCE LINE # 67
+0002 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 68
+0005 D2B4              SETB    LCD_DC
+                                           ; SOURCE LINE # 69
+0007 22                RET     
+             ; FUNCTION _LCD_Write_Cmd (END)
+
+             ; FUNCTION _LCD_Addr_Set (BEGIN)
+                                           ; SOURCE LINE # 71
+0000 8E00        R     MOV     x1,R6
+0002 8F00        R     MOV     x1+01H,R7
+0004 8C00        R     MOV     y1,R4
+0006 8D00        R     MOV     y1+01H,R5
+0008 8A00        R     MOV     x2,R2
+000A 8B00        R     MOV     x2+01H,R3
+                                           ; SOURCE LINE # 72
+                                           ; SOURCE LINE # 73
+000C 7F2A              MOV     R7,#02AH
+000E 120000      R     LCALL   _LCD_Write_Cmd
+                                           ; SOURCE LINE # 74
+0011 AF00        R     MOV     R7,x1+01H
+0013 AE00        R     MOV     R6,x1
+0015 120000      R     LCALL   _LCD_Write_Word
+                                           ; SOURCE LINE # 75
+0018 AF00        R     MOV     R7,x2+01H
+001A AE00        R     MOV     R6,x2
+001C 120000      R     LCALL   _LCD_Write_Word
+                                           ; SOURCE LINE # 76
+001F 7F2B              MOV     R7,#02BH
+0021 120000      R     LCALL   _LCD_Write_Cmd
+                                           ; SOURCE LINE # 77
+0024 AF00        R     MOV     R7,y1+01H
+0026 AE00        R     MOV     R6,y1
+0028 120000      R     LCALL   _LCD_Write_Word
+                                           ; SOURCE LINE # 78
+002B AF00        R     MOV     R7,y2+01H
+002D AE00        R     MOV     R6,y2
+002F 120000      R     LCALL   _LCD_Write_Word
+                                           ; SOURCE LINE # 79
+0032 7F2C              MOV     R7,#02CH
+0034 020000      R     LJMP    _LCD_Write_Cmd
+             ; FUNCTION _LCD_Addr_Set (END)
+
+             ; FUNCTION LCD_Init (BEGIN)
+                                           ; SOURCE LINE # 82
+                                           ; SOURCE LINE # 83
+                                           ; SOURCE LINE # 84
+0000 900000      R     MOV     DPTR,#Lcd_Power+06H
+0003 A3                INC     DPTR
+C51 COMPILER V9.57.0.0   ST7789V                                                           02/19/2022 23:37:22 PAGE 8   
+
+0004 E0                MOVX    A,@DPTR
+0005 FA                MOV     R2,A
+0006 A3                INC     DPTR
+0007 E0                MOVX    A,@DPTR
+0008 F582              MOV     DPL,A
+000A 8A83              MOV     DPH,R2
+000C E4                CLR     A
+000D FF                MOV     R7,A
+                                           ; SOURCE LINE # 85
+000E 120000      R     LCALL   L?0025
+                                           ; SOURCE LINE # 86
+0011 900000      R     MOV     DPTR,#Lcd_Power+06H
+0014 A3                INC     DPTR
+0015 E0                MOVX    A,@DPTR
+0016 FA                MOV     R2,A
+0017 A3                INC     DPTR
+0018 E0                MOVX    A,@DPTR
+0019 F582              MOV     DPL,A
+001B 8A83              MOV     DPH,R2
+001D 7F01              MOV     R7,#01H
+                                           ; SOURCE LINE # 87
+001F 120000      R     LCALL   L?0025
+                                           ; SOURCE LINE # 88
+0022 900000      R     MOV     DPTR,#Lcd_Power
+0025 A3                INC     DPTR
+0026 E0                MOVX    A,@DPTR
+0027 FA                MOV     R2,A
+0028 A3                INC     DPTR
+0029 E0                MOVX    A,@DPTR
+002A F582              MOV     DPL,A
+002C 8A83              MOV     DPH,R2
+002E 7F01              MOV     R7,#01H
+0030 7E00              MOV     R6,#00H
+0032 120000      E     LCALL   ?C?ICALL2
+                                           ; SOURCE LINE # 89
+0035 120000      R     LCALL   Delay1ms
+                                           ; SOURCE LINE # 90
+0038 7F11              MOV     R7,#011H
+003A 120000      R     LCALL   _LCD_Write_Cmd
+                                           ; SOURCE LINE # 91
+003D 120000      R     LCALL   Delay1ms
+                                           ; SOURCE LINE # 95
+0040 7F36              MOV     R7,#036H
+0042 120000      R     LCALL   _LCD_Write_Cmd
+                                           ; SOURCE LINE # 96
+0045 E4                CLR     A
+0046 FF                MOV     R7,A
+0047 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 97
+                                           ; SOURCE LINE # 98
+                                           ; SOURCE LINE # 99
+004A         ?C0019:
+                                           ; SOURCE LINE # 100
+004A 7F3A              MOV     R7,#03AH
+004C 120000      R     LCALL   _LCD_Write_Cmd
+                                           ; SOURCE LINE # 101
+004F 7F05              MOV     R7,#05H
+0051 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 104
+0054 7FB2              MOV     R7,#0B2H
+0056 120000      R     LCALL   _LCD_Write_Cmd
+                                           ; SOURCE LINE # 105
+C51 COMPILER V9.57.0.0   ST7789V                                                           02/19/2022 23:37:22 PAGE 9   
+
+0059 7F0C              MOV     R7,#0CH
+005B 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 106
+005E 7F0C              MOV     R7,#0CH
+0060 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 107
+0063 E4                CLR     A
+0064 FF                MOV     R7,A
+0065 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 108
+0068 7F33              MOV     R7,#033H
+006A 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 109
+006D 7F33              MOV     R7,#033H
+006F 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 110
+0072 7FB7              MOV     R7,#0B7H
+0074 120000      R     LCALL   _LCD_Write_Cmd
+                                           ; SOURCE LINE # 111
+0077 7F35              MOV     R7,#035H
+0079 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 114
+007C 7FBB              MOV     R7,#0BBH
+007E 120000      R     LCALL   _LCD_Write_Cmd
+                                           ; SOURCE LINE # 115
+0081 7F35              MOV     R7,#035H
+0083 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 116
+0086 7FC0              MOV     R7,#0C0H
+0088 120000      R     LCALL   _LCD_Write_Cmd
+                                           ; SOURCE LINE # 117
+008B 7F2C              MOV     R7,#02CH
+008D 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 118
+0090 7FC2              MOV     R7,#0C2H
+0092 120000      R     LCALL   _LCD_Write_Cmd
+                                           ; SOURCE LINE # 119
+0095 7F01              MOV     R7,#01H
+0097 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 120
+009A 7FC3              MOV     R7,#0C3H
+009C 120000      R     LCALL   _LCD_Write_Cmd
+                                           ; SOURCE LINE # 121
+009F 7F13              MOV     R7,#013H
+00A1 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 122
+00A4 7FC4              MOV     R7,#0C4H
+00A6 120000      R     LCALL   _LCD_Write_Cmd
+                                           ; SOURCE LINE # 123
+00A9 7F20              MOV     R7,#020H
+00AB 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 124
+00AE 7FC6              MOV     R7,#0C6H
+00B0 120000      R     LCALL   _LCD_Write_Cmd
+                                           ; SOURCE LINE # 125
+00B3 7F0F              MOV     R7,#0FH
+00B5 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 126
+00B8 7FCA              MOV     R7,#0CAH
+00BA 120000      R     LCALL   _LCD_Write_Cmd
+                                           ; SOURCE LINE # 127
+00BD 7F0F              MOV     R7,#0FH
+C51 COMPILER V9.57.0.0   ST7789V                                                           02/19/2022 23:37:22 PAGE 10  
+
+00BF 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 128
+00C2 7FC8              MOV     R7,#0C8H
+00C4 120000      R     LCALL   _LCD_Write_Cmd
+                                           ; SOURCE LINE # 129
+00C7 7F08              MOV     R7,#08H
+00C9 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 130
+00CC 7F55              MOV     R7,#055H
+00CE 120000      R     LCALL   _LCD_Write_Cmd
+                                           ; SOURCE LINE # 131
+00D1 7F90              MOV     R7,#090H
+00D3 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 132
+00D6 7FD0              MOV     R7,#0D0H
+00D8 120000      R     LCALL   _LCD_Write_Cmd
+                                           ; SOURCE LINE # 133
+00DB 7FA4              MOV     R7,#0A4H
+00DD 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 134
+00E0 7FA1              MOV     R7,#0A1H
+00E2 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 136
+00E5 7FE0              MOV     R7,#0E0H
+00E7 120000      R     LCALL   _LCD_Write_Cmd
+                                           ; SOURCE LINE # 137
+00EA 7FD0              MOV     R7,#0D0H
+00EC 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 138
+00EF E4                CLR     A
+00F0 FF                MOV     R7,A
+00F1 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 139
+00F4 7F06              MOV     R7,#06H
+00F6 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 140
+00F9 7F09              MOV     R7,#09H
+00FB 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 141
+00FE 7F0B              MOV     R7,#0BH
+0100 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 142
+0103 7F2A              MOV     R7,#02AH
+0105 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 143
+0108 7F3C              MOV     R7,#03CH
+010A 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 144
+010D 7F55              MOV     R7,#055H
+010F 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 145
+0112 7F4B              MOV     R7,#04BH
+0114 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 146
+0117 7F08              MOV     R7,#08H
+0119 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 147
+011C 7F16              MOV     R7,#016H
+011E 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 148
+0121 7F14              MOV     R7,#014H
+0123 120000      R     LCALL   _LCD_Write_Data
+C51 COMPILER V9.57.0.0   ST7789V                                                           02/19/2022 23:37:22 PAGE 11  
+
+                                           ; SOURCE LINE # 149
+0126 7F19              MOV     R7,#019H
+0128 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 150
+012B 7F20              MOV     R7,#020H
+012D 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 151
+0130 7FE1              MOV     R7,#0E1H
+0132 120000      R     LCALL   _LCD_Write_Cmd
+                                           ; SOURCE LINE # 152
+0135 7FD0              MOV     R7,#0D0H
+0137 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 153
+013A E4                CLR     A
+013B FF                MOV     R7,A
+013C 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 154
+013F 7F06              MOV     R7,#06H
+0141 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 155
+0144 7F09              MOV     R7,#09H
+0146 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 156
+0149 7F0B              MOV     R7,#0BH
+014B 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 157
+014E 7F29              MOV     R7,#029H
+0150 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 158
+0153 7F36              MOV     R7,#036H
+0155 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 159
+0158 7F54              MOV     R7,#054H
+015A 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 160
+015D 7F4B              MOV     R7,#04BH
+015F 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 161
+0162 7F0D              MOV     R7,#0DH
+0164 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 162
+0167 7F16              MOV     R7,#016H
+0169 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 163
+016C 7F14              MOV     R7,#014H
+016E 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 164
+0171 7F21              MOV     R7,#021H
+0173 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 165
+0176 7F20              MOV     R7,#020H
+0178 120000      R     LCALL   _LCD_Write_Data
+                                           ; SOURCE LINE # 166
+017B 7F29              MOV     R7,#029H
+017D 020000      R     LJMP    _LCD_Write_Cmd
+             ; FUNCTION LCD_Init (END)
+
+C51 COMPILER V9.57.0.0   ST7789V                                                           02/19/2022 23:37:22 PAGE 12  
+
+NAME                                    CLASS   MSPACE  TYPE    OFFSET  SIZE
+====                                    =====   ======  ====    ======  ====
+
+
+P0M1 . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   0093H  1
+P1M0 . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   0092H  1
+P2M0 . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   0096H  1
+P1M1 . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   0091H  1
+P0 . . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   0080H  1
+P3M0 . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00B2H  1
+P2M1 . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   0095H  1
+P1 . . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   0090H  1
+P4M0 . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00B4H  1
+P3M1 . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00B1H  1
+P2 . . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00A0H  1
+LCDSCLK. . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00C8H  1
+P5M0 . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00CAH  1
+P4M1 . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00B3H  1
+P3 . . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00B0H  1
+WKTCH. . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00ABH  1
+AC . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D6H  1
+P6M0 . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00CCH  1
+P5M1 . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00C9H  1
+P4 . . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00C0H  1
+Delay1ms . . . . . . . . . . . . . . .  PUBLIC   CODE   PROC     0003H  -----
+  i. . . . . . . . . . . . . . . . . .  AUTO     XDATA  U_CHAR   0000H  1
+  j. . . . . . . . . . . . . . . . . .  AUTO     XDATA  U_CHAR   0001H  1
+Lcd_Power. . . . . . . . . . . . . . .  PUBLIC   XDATA  STRUCT   0000H  9
+P7M0 . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00E2H  1
+P6M1 . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00CBH  1
+P5 . . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00C8H  1
+P6 . . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00E8H  1
+P7M1 . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00E1H  1
+EA . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00AFH  1
+P7 . . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00F8H  1
+WKTCL. . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00AAH  1
+SPCTL. . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00CEH  1
+P_SW1. . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00A2H  1
+P_SW2. . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00BAH  1
+LCDMOSI. . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B3H  1
+DPH1 . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00E5H  1
+EADC . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00ADH  1
+IE . . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00A8H  1
+IAP_CMD. . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00C5H  1
+size_t . . . . . . . . . . . . . . . .  TYPEDEF  -----  U_INT    -----  2
+DPL1 . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00E4H  1
+ADC_RES. . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00BDH  1
+IP2H . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00B6H  1
+IP3H . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00EEH  1
+TA . . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00AEH  1
+uchar. . . . . . . . . . . . . . . . .  TYPEDEF  -----  U_CHAR   -----  1
+INTCLKO. . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   008FH  1
+ES . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00ACH  1
+PADC . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00BDH  1
+IP . . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00B8H  1
+ADCCFG . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00DEH  1
+RI . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0098H  1
+CY . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D7H  1
+TI . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0099H  1
+_LCD_Write_Data. . . . . . . . . . . .  PUBLIC   CODE   PROC     0000H  -----
+  dat. . . . . . . . . . . . . . . . .  * REG *  DATA   U_CHAR   0005H  1
+C51 COMPILER V9.57.0.0   ST7789V                                                           02/19/2022 23:37:22 PAGE 13  
+
+NAME                                    CLASS   MSPACE  TYPE    OFFSET  SIZE
+====                                    =====   ======  ====    ======  ====
+
+
+_LCD_RES . . . . . . . . . . . . . . .  PUBLIC   CODE   PROC     0000H  -----
+  dat. . . . . . . . . . . . . . . . .  * REG *  DATA   U_CHAR   0007H  1
+IAP_ADDRH. . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00C3H  1
+PS . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00BCH  1
+SP . . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   0081H  1
+IAP_ADDRL. . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00C4H  1
+OV . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D2H  1
+PPCA . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00BFH  1
+LIRTRIM. . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   009EH  1
+CMPCR1 . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00E6H  1
+ulong. . . . . . . . . . . . . . . . .  TYPEDEF  -----  U_LONG   -----  4
+CMPCR2 . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00E7H  1
+ushort . . . . . . . . . . . . . . . .  TYPEDEF  -----  U_INT    -----  2
+ELVD . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00AEH  1
+u8 . . . . . . . . . . . . . . . . . .  TYPEDEF  -----  U_CHAR   -----  1
+P00. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0080H  1
+ADC_CONTR. . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00BCH  1
+SBUF . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   0099H  1
+P10. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0090H  1
+PCON . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   0087H  1
+P01. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0081H  1
+P20. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00A0H  1
+P11. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0091H  1
+P02. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0082H  1
+IAP_TPS. . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00F5H  1
+P30. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B0H  1
+P21. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00A1H  1
+P12. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0092H  1
+P03. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0083H  1
+P40. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00C0H  1
+P31. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B1H  1
+P22. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00A2H  1
+SCON . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   0098H  1
+P13. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0093H  1
+P04. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0084H  1
+P50. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00C8H  1
+P41. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00C1H  1
+P32. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B2H  1
+P23. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00A3H  1
+P14. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0094H  1
+TMOD . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   0089H  1
+TCON . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   0088H  1
+P05. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0085H  1
+P51. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00C9H  1
+P42. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00C2H  1
+P33. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B3H  1
+P24. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00A4H  1
+P15. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0095H  1
+P06. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0086H  1
+P52. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00CAH  1
+P43. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00C3H  1
+PLVD . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00BEH  1
+P34. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B4H  1
+P25. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00A5H  1
+P16. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0096H  1
+P07. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0087H  1
+_LCD_Write_Cmd . . . . . . . . . . . .  PUBLIC   CODE   PROC     0000H  -----
+C51 COMPILER V9.57.0.0   ST7789V                                                           02/19/2022 23:37:22 PAGE 14  
+
+NAME                                    CLASS   MSPACE  TYPE    OFFSET  SIZE
+====                                    =====   ======  ====    ======  ====
+
+
+  cmd. . . . . . . . . . . . . . . . .  * REG *  DATA   U_CHAR   0007H  1
+P53. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00CBH  1
+P44. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00C4H  1
+P35. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B5H  1
+P26. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00A6H  1
+P17. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0097H  1
+P54. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00CCH  1
+P45. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00C5H  1
+P36. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B6H  1
+P27. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00A7H  1
+P55. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00CDH  1
+P46. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00C6H  1
+P37. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B7H  1
+LCD_DC . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B4H  1
+P56. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00CEH  1
+P47. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00C7H  1
+_SpiWrite. . . . . . . . . . . . . . .  EXTERN   CODE   PROC     -----  -----
+off. . . . . . . . . . . . . . . . . .  E_CONST  -----  U_CHAR   -----  1
+P57. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00CFH  1
+IE0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0089H  1
+_LCD_Addr_Set. . . . . . . . . . . . .  PUBLIC   CODE   PROC     0000H  -----
+  x1 . . . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0000H  2
+  y1 . . . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0002H  2
+  x2 . . . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0004H  2
+  y2 . . . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0006H  2
+LCDRES . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00C0H  1
+IE1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      008BH  1
+IE2. . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00AFH  1
+_LCD_Write_Word. . . . . . . . . . . .  PUBLIC   CODE   PROC     0000H  -----
+  dat. . . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0000H  2
+B. . . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00F0H  1
+AUXR . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   008EH  1
+LcdSpi . . . . . . . . . . . . . . . .  PUBLIC   XDATA  STRUCT   0009H  12
+uint . . . . . . . . . . . . . . . . .  TYPEDEF  -----  U_INT    -----  2
+_LCD_POWER . . . . . . . . . . . . . .  PUBLIC   CODE   PROC     0000H  -----
+  dat. . . . . . . . . . . . . . . . .  * REG *  DATA   U_CHAR   0007H  1
+USBADR . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00FCH  1
+IAP_CONTR. . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00C7H  1
+USBDAT . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00ECH  1
+_LCD_BACK. . . . . . . . . . . . . . .  PUBLIC   CODE   PROC     0000H  -----
+  dat. . . . . . . . . . . . . . . . .  * REG *  DATA   U_CHAR   0007H  1
+USBCLK . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00DCH  1
+ACC. . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00E0H  1
+ET0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00A9H  1
+LCD_Init . . . . . . . . . . . . . . .  PUBLIC   CODE   PROC     0000H  -----
+_LCD_CS. . . . . . . . . . . . . . . .  PUBLIC   CODE   PROC     0000H  -----
+  dat. . . . . . . . . . . . . . . . .  * REG *  DATA   U_CHAR   0007H  1
+ET1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00ABH  1
+TF0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      008DH  1
+RSTCFG . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00FFH  1
+IP2. . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00B5H  1
+TF1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      008FH  1
+USBCON . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00F4H  1
+IP3. . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00DFH  1
+RB8. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      009AH  1
+TH0. . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   008CH  1
+EX0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00A8H  1
+C51 COMPILER V9.57.0.0   ST7789V                                                           02/19/2022 23:37:22 PAGE 15  
+
+NAME                                    CLASS   MSPACE  TYPE    OFFSET  SIZE
+====                                    =====   ======  ====    ======  ====
+
+
+TH1. . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   008DH  1
+IT0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0088H  1
+T2H. . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00D6H  1
+EX1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00AAH  1
+TB8. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      009BH  1
+IT1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      008AH  1
+T3H. . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00D4H  1
+P. . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D0H  1
+T4H. . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00D2H  1
+SM0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      009FH  1
+TL0. . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   008AH  1
+SM1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      009EH  1
+TL1. . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   008BH  1
+T2L. . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00D7H  1
+SM2. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      009DH  1
+LCD. . . . . . . . . . . . . . . . . .  * TAG *  -----  ENUM     -----  -----
+T3L. . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00D5H  1
+T4L. . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00D3H  1
+PT0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B9H  1
+RS0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D3H  1
+PT1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00BBH  1
+RS1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D4H  1
+IAP_DATA . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00C2H  1
+TR0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      008CH  1
+TR1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      008EH  1
+WDT_CONTR. . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00C1H  1
+PX0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B8H  1
+LcdSpiInit . . . . . . . . . . . . . .  PUBLIC   CODE   PROC     0000H  -----
+PX1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00BAH  1
+IRTRIM . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   009FH  1
+DPH. . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   0083H  1
+u16. . . . . . . . . . . . . . . . . .  TYPEDEF  -----  U_INT    -----  2
+on . . . . . . . . . . . . . . . . . .  E_CONST  -----  U_CHAR   -----  1
+T4T3M. . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00D1H  1
+ADC_RESL . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00BEH  1
+DPL. . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   0082H  1
+SPSTAT . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00CDH  1
+IPH. . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00B7H  1
+_LCD_SCLK. . . . . . . . . . . . . . .  PUBLIC   CODE   PROC     0000H  -----
+  dat. . . . . . . . . . . . . . . . .  * REG *  DATA   U_CHAR   0007H  1
+LCDPOWER . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00A0H  1
+S2BUF. . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   009BH  1
+S3BUF. . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00ADH  1
+REN. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      009CH  1
+S4BUF. . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   0085H  1
+LCDBACK. . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00A1H  1
+S2CON. . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   009AH  1
+DPS. . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00E3H  1
+S3CON. . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00ACH  1
+S4CON. . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   0084H  1
+LCDCS. . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00C9H  1
+AUXINTIF . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00EFH  1
+SPI. . . . . . . . . . . . . . . . . .  TYPEDEF  -----  STRUCT   -----  12
+  SpiIo. . . . . . . . . . . . . . . .  MEMBER   -----  STRUCT   0000H  9
+  SPIWrite . . . . . . . . . . . . . .  MEMBER   -----  PTR      0009H  3
+LCDIO. . . . . . . . . . . . . . . . .  TYPEDEF  -----  STRUCT   -----  9
+  BACK . . . . . . . . . . . . . . . .  MEMBER   -----  PTR      0000H  3
+C51 COMPILER V9.57.0.0   ST7789V                                                           02/19/2022 23:37:22 PAGE 16  
+
+NAME                                    CLASS   MSPACE  TYPE    OFFSET  SIZE
+====                                    =====   ======  ====    ======  ====
+
+
+  POWER. . . . . . . . . . . . . . . .  MEMBER   -----  PTR      0003H  3
+  RES. . . . . . . . . . . . . . . . .  MEMBER   -----  PTR      0006H  3
+wchar_t. . . . . . . . . . . . . . . .  TYPEDEF  -----  CHAR     -----  1
+SADEN. . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00B9H  1
+_LCD_MOSI. . . . . . . . . . . . . . .  PUBLIC   CODE   PROC     0000H  -----
+  dat. . . . . . . . . . . . . . . . .  * REG *  DATA   U_CHAR   0007H  1
+SADDR. . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00A9H  1
+IAP_TRIG . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00C6H  1
+F0 . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D5H  1
+IRCBAND. . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   009DH  1
+SPIStruct. . . . . . . . . . . . . . .  TYPEDEF  -----  STRUCT   -----  9
+  CS . . . . . . . . . . . . . . . . .  MEMBER   -----  PTR      0000H  3
+  SCLK . . . . . . . . . . . . . . . .  MEMBER   -----  PTR      0003H  3
+  MOSI . . . . . . . . . . . . . . . .  MEMBER   -----  PTR      0006H  3
+F1 . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D1H  1
+PSW. . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00D0H  1
+SPDAT. . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00CFH  1
+P0M0 . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   0094H  1
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    612    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =     21       2
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      10
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

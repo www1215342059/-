@@ -1,0 +1,58 @@
+C51 COMPILER V9.57.0.0   TIME                                                              01/20/2022 17:48:14 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE TIME
+OBJECT MODULE PLACED IN .\Objects\Time.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE ..\APP\Time\Time.c COMPACT OPTIMIZE(8,SPEED) BROWSE INCDIR(..\APP;..\..\鞋
+                    -柜主控;..\APP\ADC;..\APP\Eeprom;..\APP\Fingerprint;..\APP\System;..\APP\System;..\APP\Uart;..\APP\WIFI;..\APP\LCD;..\APP
+                    -\SPI;..\APP\GUI;..\APP\Time;..\APP\H) DEBUG OBJECTEXTEND PRINT(.\Listings\Time.lst) TABS(2) OBJECT(.\Objects\Time.obj)
+
+line level    source
+
+   1          #include "Time.h"
+   2          #include "Uart.h"
+   3          
+   4          uint xdata times = 0;
+   5          uint xdata timesindex = 1;
+   6          
+   7          void TimeInit()
+   8          {
+   9   1        AUXR |= 0x80; //定时器时钟1T模式
+  10   1        TMOD &= 0xF0; //设置定时器模式
+  11   1        TL0 = 0xB4;   //设置定时初始值
+  12   1        TH0 = 0xFE;   //设置定时初始值
+  13   1        TF0 = 0;    //清除TF0标志
+  14   1        TR0 = 1;    //定时器0开始计时
+  15   1        ET0 = 1;
+  16   1        EA = 1;
+  17   1      }
+  18          
+  19          void Time0() interrupt 1
+  20          {
+  21   1        times++;
+  22   1        if (times < 100)
+  23   1        {
+  24   2          if (times < timesindex)
+  25   2            PWM = 1;
+  26   2          else
+  27   2            PWM = 0;
+  28   2        }
+  29   1        else
+  30   1          times = 0;
+  31   1        uart1.UartReadTime(&uart1);
+  32   1        uart4.UartReadTime(&uart4);
+  33   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    185    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =      4    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

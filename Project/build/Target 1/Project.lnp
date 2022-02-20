@@ -1,0 +1,3 @@
+
+".\build\Target 1\__\APP\ADC\Adc.o",".\build\Target 1\__\APP\Eeprom\Eeprom.o",".\build\Target 1\__\APP\Fingerprint\Fingerprint.o",".\build\Target 1\__\APP\GUI\GUI.o",".\build\Target 1\__\APP\LCD\ST7789V.o",".\build\Target 1\__\APP\SPI\SPI.o",".\build\Target 1\__\APP\System\System.o",".\build\Target 1\__\APP\Time\Time.o",".\build\Target 1\__\APP\Uart\Uart.o",".\build\Target 1\__\APP\WIFI\WIFI.o",".\build\Target 1\__\APP\mystring.o",".\build\Target 1\__\User\main.o" TO ".\build\Target 1\Project"
+PRINT(".\build\Target 1\Project.map") REMOVEUNUSED

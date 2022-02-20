@@ -1,0 +1,78 @@
+C51 COMPILER V9.57.0.0   MAIN                                                              01/20/2022 17:48:06 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE ..\User\main.c COMPACT OPTIMIZE(8,SPEED) BROWSE INCDIR(..\APP;..\..\鞋柜主
+                    -控;..\APP\ADC;..\APP\Eeprom;..\APP\Fingerprint;..\APP\System;..\APP\System;..\APP\Uart;..\APP\WIFI;..\APP\LCD;..\APP\SPI
+                    -;..\APP\GUI;..\APP\Time;..\APP\H) DEBUG OBJECTEXTEND PRINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "ADC.h"
+   2          #include "Public.h"
+   3          #include "Uart.h"
+   4          //#include "GUI.h"
+   5          #include "ST7789V.h"
+   6          #include "Time.h"
+   7          
+   8          void IoInit();
+   9          
+  10          void main()
+  11          {
+  12   1        
+  13   1        IoInit();//IO初始化
+  14   1        UartStructInit(&uart1,1,baud115200);//串口1初始化
+  15   1        //TimeInit();
+  16   1        UartStructInit(&uart4,4,57600);//串口2初始化
+  17   1        TimeInit();//定时器初始化
+  18   1        Lcd_Power.BACK(0);
+  19   1        Lcd_Power.POWER(0);
+  20   1        while(1)
+  21   1        { 
+  22   2          if(uart1._readFlag)
+  23   2          {
+  24   3            uart1._readFlag = 0;
+  25   3            timesindex = uart1._uartRead[0];
+  26   3            uart1.UartWriteChar(&uart1,timesindex);
+  27   3            //uart1.UartWriteBuffe(&uart4,&uart1);
+  28   3            uart1._uartSign = 0;
+  29   3          }
+  30   2           if(uart4._readFlag)
+  31   2          {
+  32   3            uart4._readFlag = 0;
+  33   3            //uart1.UartWriteBuffe(&uart1,&uart4);
+  34   3            uart4._uartSign = 0;
+  35   3          } 
+  36   2        }
+  37   1      }
+  38          
+  39          void IoInit()
+  40          {
+  41   1        P0M0 = 0x00;
+  42   1        P0M1 = 0x00;
+  43   1        P2M0 = 0x00;
+  44   1        P2M1 = 0x00;
+  45   1        P3M0 = 0x00;
+  46   1        P3M1 = 0x00;
+  47   1        P1M0 = 0x00;
+  48   1        P1M1 = 0x00;
+  49   1        P5M0 = 0x00;
+  50   1        P5M1 = 0x00;
+  51   1      }
+
+
+C51 COMPILER V9.57.0.0   MAIN                                                              01/20/2022 17:48:06 PAGE 2   
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    172    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

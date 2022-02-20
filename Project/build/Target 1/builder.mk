@@ -1,0 +1,5 @@
+CFLAGS := PRINT(".\build\Target 1\${c}.lst") OMF2 TABS(4) CODE NOCOND SYMBOLS OPTIMIZE(8,SPEED) SMALL ROM(LARGE) INCDIR(D:\keil5\C51\INC\Atmel;.\..\APP;.\..;.\..\APP\ADC;.\..\APP\Eeprom;.\..\APP\Fingerprint;.\..\APP\System;.\..\APP\Uart;.\..\APP\WIFI;.\..\APP\LCD;.\..\APP\SPI;.\..\APP\GUI;.\..\APP\Time;.\..\APP\H;D:\keil5\C51\INC) DEFINE(__UVISION_VERSION='526')
+CXXFLAGS := PRINT(".\build\Target 1\${cpp}.lst") OMF2 TABS(4) CODE NOCOND SYMBOLS OPTIMIZE(8,SPEED) SMALL ROM(LARGE) INCDIR(D:\keil5\C51\INC\Atmel;.\..\APP;.\..;.\..\APP\ADC;.\..\APP\Eeprom;.\..\APP\Fingerprint;.\..\APP\System;.\..\APP\Uart;.\..\APP\WIFI;.\..\APP\LCD;.\..\APP\SPI;.\..\APP\GUI;.\..\APP\Time;.\..\APP\H;D:\keil5\C51\INC) DEFINE(__UVISION_VERSION='526')
+ASMFLAGS := PRINT(.\build\Target 1\${asm}.lst) SET(SMALL) INCDIR(D:\keil5\C51\INC\Atmel;.\..\APP;.\..;.\..\APP\ADC;.\..\APP\Eeprom;.\..\APP\Fingerprint;.\..\APP\System;.\..\APP\Uart;.\..\APP\WIFI;.\..\APP\LCD;.\..\APP\SPI;.\..\APP\GUI;.\..\APP\Time;.\..\APP\H;D:\keil5\C51\INC)
+LDFLAGS :=  PRINT(".\build\Target 1\Project.map") REMOVEUNUSED
+LDLIBS := 

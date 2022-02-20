@@ -1,0 +1,493 @@
+C51 COMPILER V9.57.0.0   GUI                                                               01/20/2022 17:48:14 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE GUI
+OBJECT MODULE PLACED IN .\Objects\GUI.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE ..\APP\GUI\GUI.c COMPACT OPTIMIZE(8,SPEED) BROWSE INCDIR(..\APP;..\..\鞋柜
+                    -主控;..\APP\ADC;..\APP\Eeprom;..\APP\Fingerprint;..\APP\System;..\APP\System;..\APP\Uart;..\APP\WIFI;..\APP\LCD;..\APP\S
+                    -PI;..\APP\GUI;..\APP\Time;..\APP\H) DEBUG OBJECTEXTEND PRINT(.\Listings\GUI.lst) TABS(2) OBJECT(.\Objects\GUI.obj)
+
+line level    source
+
+   1          #include "GUI.h"
+   2          #include "ST7789V.h"
+   3          #include "WordStock.h"
+   4          
+   5          void GUI_Fill(uint x1, uint y1, uint x2, uint y2, uint color)
+   6          {
+   7   1        uint xdata i, j;
+   8   1        LCD_Addr_Set(x1, y1, x2 - 1, y2 - 1); //设置显示范围
+   9   1        for (i = y1; i < y2; i++)
+  10   1        {
+  11   2          for (j = x1; j < x2; j++)
+  12   2          {
+  13   3            LCD_Write_Word(color);
+  14   3          }
+  15   2        }
+  16   1      }
+  17          
+  18          void GUI_DrawPoint(uint x1, uint y1, uint color)
+  19          {
+  20   1        LCD_Addr_Set(x1, y1, x1, y1); //设置光标位置
+  21   1        LCD_Write_Word(color);
+  22   1      }
+  23          
+  24          void GUI_DrawLine(uint x1, uint y1, uint x2, uint y2, uint color)
+  25          {
+  26   1        uint xdata t;
+  27   1        int xdata xerr = 0, yerr = 0, delta_x, delta_y, distance;
+  28   1        int xdata incx, incy, uRow, uCol;
+  29   1        delta_x = x2 - x1; //计算坐标增量
+  30   1        delta_y = y2 - y1;
+  31   1        uRow = x1; //画线起点坐标
+  32   1        uCol = y1;
+  33   1        if (delta_x > 0)
+  34   1          incx = 1; //设置单步方向
+  35   1        else if (delta_x == 0)
+  36   1          incx = 0; //垂直线
+  37   1        else
+  38   1        {
+  39   2          incx = -1;
+  40   2          delta_x = -delta_x;
+  41   2        }
+  42   1        if (delta_y > 0)
+  43   1          incy = 1;
+  44   1        else if (delta_y == 0)
+  45   1          incy = 0; //水平线
+  46   1        else
+  47   1        {
+  48   2          incy = -1;
+  49   2          delta_y = -delta_y;
+  50   2        }
+  51   1        if (delta_x > delta_y)
+  52   1          distance = delta_x; //选取基本增量坐标轴
+  53   1        else
+C51 COMPILER V9.57.0.0   GUI                                                               01/20/2022 17:48:14 PAGE 2   
+
+  54   1          distance = delta_y;
+  55   1        for (t = 0; t < distance + 1; t++)
+  56   1        {
+  57   2          GUI_DrawPoint(uRow, uCol, color); //画点
+  58   2          xerr += delta_x;
+  59   2          yerr += delta_y;
+  60   2          if (xerr > distance)
+  61   2          {
+  62   3            xerr -= distance;
+  63   3            uRow += incx;
+  64   3          }
+  65   2          if (yerr > distance)
+  66   2          {
+  67   3            yerr -= distance;
+  68   3            uCol += incy;
+  69   3          }
+  70   2        }
+  71   1      }
+  72          
+  73          void GUI_DrawRectangle(uint x1, uint y1, uint x2, uint y2, uint color)
+  74          {
+  75   1        GUI_DrawLine(x1, y1, x2, y1, color);
+  76   1        GUI_DrawLine(x1, y1, x1, y2, color);
+  77   1        GUI_DrawLine(x1, y2, x2, y2, color);
+  78   1        GUI_DrawLine(x2, y1, x2, y2, color);
+  79   1      }
+  80          
+  81          void GUI_DrawCircle(uint x1, uint y1, uchar r, uint color)
+  82          {
+  83   1        int xdata a, b;
+  84   1        a = 0;
+  85   1        b = r;
+  86   1        while (a <= b)
+  87   1        {
+  88   2          GUI_DrawPoint(x1 - b, y1 - a, color); //3
+  89   2          GUI_DrawPoint(x1 + b, y1 - a, color); //0
+  90   2          GUI_DrawPoint(x1 - a, y1 + b, color); //1
+  91   2          GUI_DrawPoint(x1 - a, y1 - b, color); //2
+  92   2          GUI_DrawPoint(x1 + b, y1 + a, color); //4
+  93   2          GUI_DrawPoint(x1 + a, y1 - b, color); //5
+  94   2          GUI_DrawPoint(x1 + a, y1 + b, color); //6
+  95   2          GUI_DrawPoint(x1 - b, y1 + a, color); //7
+  96   2          a++;
+  97   2          if ((a * a + b * b) > (r * r)) //判断要画的点是否过远
+  98   2          {
+  99   3            b--;
+ 100   3          }
+ 101   2        }
+ 102   1      }
+ 103          
+ 104          /******************************************************************************
+ 105                函数说明：显示汉字串
+ 106                入口数据：x,y显示坐标
+ 107                          *s 要显示的汉字串
+ 108                          fc 字的颜色
+ 109                          bc 字的背景色
+ 110                          sizey 字号 可选 16 24 32
+ 111                          mode:  0非叠加模式  1叠加模式
+ 112                返回值：  无
+ 113          ******************************************************************************/
+ 114          void GUI_ShowChinese(u16 x, u16 y, u8 *s, u16 fc, u16 bc, u8 sizey, u8 mode)
+ 115          {
+C51 COMPILER V9.57.0.0   GUI                                                               01/20/2022 17:48:14 PAGE 3   
+
+ 116   1        while (*s != 0)
+ 117   1        {
+ 118   2          if (sizey == 12)
+ 119   2            GUI_ShowChinese12x12(x, y, s, fc, bc, sizey, mode);
+ 120   2          else if (sizey == 16)
+ 121   2            GUI_ShowChinese16x16(x, y, s, fc, bc, sizey, mode);
+ 122   2          else if (sizey == 24)
+ 123   2            GUI_ShowChinese24x24(x, y, s, fc, bc, sizey, mode);
+ 124   2          else if (sizey == 32)
+ 125   2            GUI_ShowChinese32x32(x, y, s, fc, bc, sizey, mode);
+ 126   2          else
+ 127   2            return;
+ 128   2          s += 2;
+ 129   2          x += sizey;
+ 130   2        }
+ 131   1      }
+ 132          
+ 133          /******************************************************************************
+ 134                函数说明：显示单个12x12汉字
+ 135                入口数据：x,y显示坐标
+ 136                          *s 要显示的汉字
+ 137                          fc 字的颜色
+ 138                          bc 字的背景色
+ 139                          sizey 字号
+ 140                          mode:  0非叠加模式  1叠加模式
+ 141                返回值：  无
+ 142          ******************************************************************************/
+ 143          void GUI_ShowChinese12x12(u16 x, u16 y, u8 *s, u16 fc, u16 bc, u8 sizey, u8 mode)
+ 144          {
+ 145   1        u8 xdata i, j, m = 0;
+ 146   1        u16 xdata k;
+ 147   1        u16 xdata HZnum;     //汉字数目
+ 148   1        u16 xdata TypefaceNum; //一个字符所占字节大小
+ 149   1        u16 xdata x0 = x;
+ 150   1        TypefaceNum = (sizey / 8 + ((sizey % 8) ? 1 : 0)) * sizey;
+ 151   1      
+ 152   1        HZnum = sizeof(tfont12) / sizeof(typFNT_GB12); //统计汉字数目
+ 153   1        for (k = 0; k < HZnum; k++)
+ 154   1        {
+ 155   2          if ((tfont12[k].Index[0] == *(s)) && (tfont12[k].Index[1] == *(s + 1)))
+ 156   2          {
+ 157   3            LCD_Addr_Set(x, y, x + sizey - 1, y + sizey - 1);
+ 158   3            for (i = 0; i < TypefaceNum; i++)
+ 159   3            {
+ 160   4              for (j = 0; j < 8; j++)
+ 161   4              {
+ 162   5                if (!mode) //非叠加方式
+ 163   5                {
+ 164   6                  if (tfont12[k].Msk[i] & (0x01 << j))
+ 165   6                    LCD_Write_Word(fc);
+ 166   6                  else
+ 167   6                    LCD_Write_Word(bc);
+ 168   6                  m++;
+ 169   6                  if (m % sizey == 0)
+ 170   6                  {
+ 171   7                    m = 0;
+ 172   7                    break;
+ 173   7                  }
+ 174   6                }
+ 175   5                else //叠加方式
+ 176   5                {
+ 177   6                  if (tfont12[k].Msk[i] & (0x01 << j))
+C51 COMPILER V9.57.0.0   GUI                                                               01/20/2022 17:48:14 PAGE 4   
+
+ 178   6                    GUI_DrawPoint(x, y, fc); //画一个点
+ 179   6                  x++;
+ 180   6                  if ((x - x0) == sizey)
+ 181   6                  {
+ 182   7                    x = x0;
+ 183   7                    y++;
+ 184   7                    break;
+ 185   7                  }
+ 186   6                }
+ 187   5              }
+ 188   4            }
+ 189   3          }
+ 190   2          continue; //查找到对应点阵字库立即退出，防止多个汉字重复取模带来影响
+ 191   2        }
+ 192   1      }
+ 193          
+ 194          /******************************************************************************
+ 195                函数说明：显示单个16x16汉字
+ 196                入口数据：x,y显示坐标
+ 197                          *s 要显示的汉字
+ 198                          fc 字的颜色
+ 199                          bc 字的背景色
+ 200                          sizey 字号
+ 201                          mode:  0非叠加模式  1叠加模式
+ 202                返回值：  无
+ 203          ******************************************************************************/
+ 204          void GUI_ShowChinese16x16(u16 x, u16 y, u8 *s, u16 fc, u16 bc, u8 sizey, u8 mode)
+ 205          {
+ 206   1        u8 xdata i, j, m = 0;
+ 207   1        u16 xdata k;
+ 208   1        u16 xdata HZnum;     //汉字数目
+ 209   1        u16 xdata TypefaceNum; //一个字符所占字节大小
+ 210   1        u16 xdata x0 = x;
+ 211   1        TypefaceNum = (sizey / 8 + ((sizey % 8) ? 1 : 0)) * sizey;
+ 212   1        HZnum = sizeof(tfont16) / sizeof(typFNT_GB16); //统计汉字数目
+ 213   1        for (k = 0; k < HZnum; k++)
+ 214   1        {
+ 215   2          if ((tfont16[k].Index[0] == *(s)) && (tfont16[k].Index[1] == *(s + 1)))
+ 216   2          {
+ 217   3            LCD_Addr_Set(x, y, x + sizey - 1, y + sizey - 1);
+ 218   3            for (i = 0; i < TypefaceNum; i++)
+ 219   3            {
+ 220   4              for (j = 0; j < 8; j++)
+ 221   4              {
+ 222   5                if (!mode) //非叠加方式
+ 223   5                {
+ 224   6                  if (tfont16[k].Msk[i] & (0x01 << j))
+ 225   6                    LCD_Write_Word(fc);
+ 226   6                  else
+ 227   6                    LCD_Write_Word(bc);
+ 228   6                  m++;
+ 229   6                  if (m % sizey == 0)
+ 230   6                  {
+ 231   7                    m = 0;
+ 232   7                    break;
+ 233   7                  }
+ 234   6                }
+ 235   5                else //叠加方式
+ 236   5                {
+ 237   6                  if (tfont16[k].Msk[i] & (0x01 << j))
+ 238   6                    GUI_DrawPoint(x, y, fc); //画一个点
+ 239   6                  x++;
+C51 COMPILER V9.57.0.0   GUI                                                               01/20/2022 17:48:14 PAGE 5   
+
+ 240   6                  if ((x - x0) == sizey)
+ 241   6                  {
+ 242   7                    x = x0;
+ 243   7                    y++;
+ 244   7                    break;
+ 245   7                  }
+ 246   6                }
+ 247   5              }
+ 248   4            }
+ 249   3          }
+ 250   2          continue; //查找到对应点阵字库立即退出，防止多个汉字重复取模带来影响
+ 251   2        }
+ 252   1      }
+ 253          
+ 254          /******************************************************************************
+ 255                函数说明：显示单个24x24汉字
+ 256                入口数据：x,y显示坐标
+ 257                          *s 要显示的汉字
+ 258                          fc 字的颜色
+ 259                          bc 字的背景色
+ 260                          sizey 字号
+ 261                          mode:  0非叠加模式  1叠加模式
+ 262                返回值：  无
+ 263          ******************************************************************************/
+ 264          void GUI_ShowChinese24x24(u16 x, u16 y, u8 *s, u16 fc, u16 bc, u8 sizey, u8 mode)
+ 265          {
+ 266   1        u8 xdata i, j, m = 0;
+ 267   1        u16 xdata k;
+ 268   1        u16 xdata HZnum;     //汉字数目
+ 269   1        u16 xdata TypefaceNum; //一个字符所占字节大小
+ 270   1        u16 xdata x0 = x;
+ 271   1        TypefaceNum = (sizey / 8 + ((sizey % 8) ? 1 : 0)) * sizey;
+ 272   1        HZnum = sizeof(tfont24) / sizeof(typFNT_GB24); //统计汉字数目
+ 273   1        for (k = 0; k < HZnum; k++)
+ 274   1        {
+ 275   2          if ((tfont24[k].Index[0] == *(s)) && (tfont24[k].Index[1] == *(s + 1)))
+ 276   2          {
+ 277   3            LCD_Addr_Set(x, y, x + sizey - 1, y + sizey - 1);
+ 278   3            for (i = 0; i < TypefaceNum; i++)
+ 279   3            {
+ 280   4              for (j = 0; j < 8; j++)
+ 281   4              {
+ 282   5                if (!mode) //非叠加方式
+ 283   5                {
+ 284   6                  if (tfont24[k].Msk[i] & (0x01 << j))
+ 285   6                    LCD_Write_Word(fc);
+ 286   6                  else
+ 287   6                    LCD_Write_Word(bc);
+ 288   6                  m++;
+ 289   6                  if (m % sizey == 0)
+ 290   6                  {
+ 291   7                    m = 0;
+ 292   7                    break;
+ 293   7                  }
+ 294   6                }
+ 295   5                else //叠加方式
+ 296   5                {
+ 297   6                  if (tfont24[k].Msk[i] & (0x01 << j))
+ 298   6                    GUI_DrawPoint(x, y, fc); //画一个点
+ 299   6                  x++;
+ 300   6                  if ((x - x0) == sizey)
+ 301   6                  {
+C51 COMPILER V9.57.0.0   GUI                                                               01/20/2022 17:48:14 PAGE 6   
+
+ 302   7                    x = x0;
+ 303   7                    y++;
+ 304   7                    break;
+ 305   7                  }
+ 306   6                }
+ 307   5              }
+ 308   4            }
+ 309   3          }
+ 310   2          continue; //查找到对应点阵字库立即退出，防止多个汉字重复取模带来影响
+ 311   2        }
+ 312   1      }
+ 313          
+ 314          /******************************************************************************
+ 315                函数说明：显示单个32x32汉字
+ 316                入口数据：x,y显示坐标
+ 317                          *s 要显示的汉字
+ 318                          fc 字的颜色
+ 319                          bc 字的背景色
+ 320                          sizey 字号
+ 321                          mode:  0非叠加模式  1叠加模式
+ 322                返回值：  无
+ 323          ******************************************************************************/
+ 324          void GUI_ShowChinese32x32(u16 x, u16 y, u8 *s, u16 fc, u16 bc, u8 sizey, u8 mode)
+ 325          {
+ 326   1        u8 xdata i, j, m = 0;
+ 327   1        u16 xdata k;
+ 328   1        u16 xdata HZnum;     //汉字数目
+ 329   1        u16 xdata TypefaceNum; //一个字符所占字节大小
+ 330   1        u16 xdata x0 = x;
+ 331   1        TypefaceNum = (sizey / 8 + ((sizey % 8) ? 1 : 0)) * sizey;
+ 332   1        HZnum = sizeof(tfont32) / sizeof(typFNT_GB32); //统计汉字数目
+ 333   1        for (k = 0; k < HZnum; k++)
+ 334   1        {
+ 335   2          if ((tfont32[k].Index[0] == *(s)) && (tfont32[k].Index[1] == *(s + 1)))
+ 336   2          {
+ 337   3            LCD_Addr_Set(x, y, x + sizey - 1, y + sizey - 1);
+ 338   3            for (i = 0; i < TypefaceNum; i++)
+ 339   3            {
+ 340   4              for (j = 0; j < 8; j++)
+ 341   4              {
+ 342   5                if (!mode) //非叠加方式
+ 343   5                {
+ 344   6                  if (tfont32[k].Msk[i] & (0x01 << j))
+ 345   6                    LCD_Write_Word(fc);
+ 346   6                  else
+ 347   6                    LCD_Write_Word(bc);
+ 348   6                  m++;
+ 349   6                  if (m % sizey == 0)
+ 350   6                  {
+ 351   7                    m = 0;
+ 352   7                    break;
+ 353   7                  }
+ 354   6                }
+ 355   5                else //叠加方式
+ 356   5                {
+ 357   6                  if (tfont32[k].Msk[i] & (0x01 << j))
+ 358   6                    GUI_DrawPoint(x, y, fc); //画一个点
+ 359   6                  x++;
+ 360   6                  if ((x - x0) == sizey)
+ 361   6                  {
+ 362   7                    x = x0;
+ 363   7                    y++;
+C51 COMPILER V9.57.0.0   GUI                                                               01/20/2022 17:48:14 PAGE 7   
+
+ 364   7                    break;
+ 365   7                  }
+ 366   6                }
+ 367   5              }
+ 368   4            }
+ 369   3          }
+ 370   2          continue; //查找到对应点阵字库立即退出，防止多个汉字重复取模带来影响
+ 371   2        }
+ 372   1      }
+ 373          
+ 374          /******************************************************************************
+ 375                函数说明：显示单个字符
+ 376                入口数据：x,y显示坐标
+ 377                          num 要显示的字符
+ 378                          fc 字的颜色
+ 379                          bc 字的背景色
+ 380                          sizey 字号
+ 381                          mode:  0非叠加模式  1叠加模式
+ 382                返回值：  无
+ 383          ******************************************************************************/
+ 384          void GUI_ShowChar(u16 x, u16 y, u8 num, u16 fc, u16 bc, u8 sizey, u8 mode)
+ 385          {
+ 386   1        u8 xdata temp, sizex, t, m = 0;
+ 387   1        u16 xdata i, TypefaceNum; //一个字符所占字节大小
+ 388   1        u16 xdata x0 = x;
+ 389   1        sizex = sizey / 2;
+ 390   1        TypefaceNum = (sizex / 8 + ((sizex % 8) ? 1 : 0)) * sizey;
+ 391   1        num = num - ' ';                  //得到偏移后的值
+ 392   1        LCD_Addr_Set(x, y, x + sizex - 1, y + sizey - 1); //设置光标位置
+ 393   1        for (i = 0; i < TypefaceNum; i++)
+ 394   1        {
+ 395   2          if (sizey == 12)
+ 396   2            temp = ascii_1206[num][i]; //调用6x12字体
+ 397   2          else if (sizey == 16)
+ 398   2            temp = ascii_1608[num][i]; //调用8x16字体
+ 399   2          else if (sizey == 24)
+ 400   2            temp = ascii_2412[num][i]; //调用12x24字体
+ 401   2          else if (sizey == 32)
+ 402   2            temp = ascii_3216[num][i]; //调用16x32字体
+ 403   2          else
+ 404   2            return;
+ 405   2          for (t = 0; t < 8; t++)
+ 406   2          {
+ 407   3            if (!mode) //非叠加模式
+ 408   3            {
+ 409   4              if (temp & (0x01 << t))
+ 410   4                LCD_Write_Word(fc);
+ 411   4              else
+ 412   4                LCD_Write_Word(bc);
+ 413   4              m++;
+ 414   4              if (m % sizex == 0)
+ 415   4              {
+ 416   5                m = 0;
+ 417   5                break;
+ 418   5              }
+ 419   4            }
+ 420   3            else //叠加模式
+ 421   3            {
+ 422   4              if (temp & (0x01 << t))
+ 423   4                GUI_DrawPoint(x, y, fc); //画一个点
+ 424   4              x++;
+ 425   4              if ((x - x0) == sizex)
+C51 COMPILER V9.57.0.0   GUI                                                               01/20/2022 17:48:14 PAGE 8   
+
+ 426   4              {
+ 427   5                x = x0;
+ 428   5                y++;
+ 429   5                break;
+ 430   5              }
+ 431   4            }
+ 432   3          }
+ 433   2        }
+ 434   1      }
+ 435          
+ 436          /******************************************************************************
+ 437                函数说明：显示字符串
+ 438                入口数据：x,y显示坐标
+ 439                          *p 要显示的字符串
+ 440                          fc 字的颜色
+ 441                          bc 字的背景色
+ 442                          sizey 字号
+ 443                          mode:  0非叠加模式  1叠加模式
+ 444                返回值：  无
+ 445          ******************************************************************************/
+ 446          void GUI_ShowString(u16 x, u16 y, const u8 *p, u16 fc, u16 bc, u8 sizey, u8 mode)
+ 447          {
+ 448   1        while (*p != '\0')
+ 449   1        {
+ 450   2          GUI_ShowChar(x, y, *p, fc, bc, sizey, mode);
+ 451   2          x += sizey / 2;
+ 452   2          p++;
+ 453   2        }
+ 454   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   4735    ----
+   CONSTANT SIZE    =  14620    ----
+   XDATA SIZE       =   ----      82
+   PDATA SIZE       =   ----     130
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

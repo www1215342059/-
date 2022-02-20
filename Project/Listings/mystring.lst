@@ -1,0 +1,36 @@
+C51 COMPILER V9.57.0.0   MYSTRING                                                          01/20/2022 17:48:07 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE MYSTRING
+OBJECT MODULE PLACED IN .\Objects\mystring.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE ..\APP\mystring.c COMPACT OPTIMIZE(8,SPEED) BROWSE INCDIR(..\APP;..\..\Ð¬¹
+                    -ñÖ÷¿Ø;..\APP\ADC;..\APP\Eeprom;..\APP\Fingerprint;..\APP\System;..\APP\System;..\APP\Uart;..\APP\WIFI;..\APP\LCD;..\APP\
+                    -SPI;..\APP\GUI;..\APP\Time;..\APP\H) DEBUG OBJECTEXTEND PRINT(.\Listings\mystring.lst) TABS(2) OBJECT(.\Objects\mystring
+                    -.obj)
+
+line level    source
+
+   1          #include "mystring.h"
+   2          
+   3          void numberscopy(uchar* s1,uchar* s2,uchar num)
+   4          {
+   5   1          uchar i;
+   6   1          for(i=0;i<=num;i++)
+   7   1          {
+   8   2              *(s1+i) = *(s2+i);
+   9   2          }
+  10   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     63    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----       7
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,27 @@
+C51 COMPILER V9.57.0.0   SYSTEM                                                            01/20/2022 17:48:11 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE SYSTEM
+OBJECT MODULE PLACED IN .\Objects\System.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE ..\APP\System\System.c COMPACT OPTIMIZE(8,SPEED) BROWSE INCDIR(..\APP;..\.
+                    -.\Ð¬¹ñÖ÷¿Ø;..\APP\ADC;..\APP\Eeprom;..\APP\Fingerprint;..\APP\System;..\APP\System;..\APP\Uart;..\APP\WIFI;..\APP\LCD;..
+                    -\APP\SPI;..\APP\GUI;..\APP\Time;..\APP\H) DEBUG OBJECTEXTEND PRINT(.\Listings\System.lst) TABS(2) OBJECT(.\Objects\Syste
+                    -m.obj)
+
+line level    source
+
+   1          #include "System.h"
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   ----    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

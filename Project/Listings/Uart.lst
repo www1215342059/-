@@ -1,0 +1,237 @@
+C51 COMPILER V9.57.0.0   UART                                                              01/20/2022 17:48:11 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE UART
+OBJECT MODULE PLACED IN .\Objects\Uart.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE ..\APP\Uart\Uart.c COMPACT OPTIMIZE(8,SPEED) BROWSE INCDIR(..\APP;..\..\鞋
+                    -柜主控;..\APP\ADC;..\APP\Eeprom;..\APP\Fingerprint;..\APP\System;..\APP\System;..\APP\Uart;..\APP\WIFI;..\APP\LCD;..\APP
+                    -\SPI;..\APP\GUI;..\APP\Time;..\APP\H) DEBUG OBJECTEXTEND PRINT(.\Listings\Uart.lst) TABS(2) OBJECT(.\Objects\Uart.obj)
+
+line level    source
+
+   1          #include "Uart.h"
+   2          
+   3          Uart xdata uart1,uart4;
+   4          
+   5          /**
+   6            * @brief  串口结构初始化
+   7            * @param  uart:初始化的串口结构体
+   8            uartId:串口的标号
+   9            
+  10            * @retval NULL
+  11            */
+  12          void UartStructInit(Uart* uart,uchar uartId,ulong boad)
+  13          {
+  14   1        uart->_uartId = uartId;   //串口号选择
+  15   1        uart->_uartSign = 0;      //串口成员初始化
+  16   1        uart->_uartStart = 0;     //串口成员初始化
+  17   1        uart->_readFlag = 0;      //串口成员初始化
+  18   1        uart->_uartTime = 0;      //串口成员初始化
+  19   1        uart->_baudRate = boad;   //串口波特率
+  20   1        uart->UartRead = uartRead;            //串口读函数
+  21   1        uart->UartWriteString = uartWriteString;//串口写字符串
+  22   1        uart->UartWriteChar = uartWriteChar;  //串口写字节
+  23   1        uart->UartWriteBuffe = uartWriteBuffe;//串口写串口缓存
+  24   1        uart->UartReadTime = uartReadTime;    //串口读时钟
+  25   1        UartInit(uart);
+  26   1      }
+  27          /**
+  28            * @brief  串口初始化函数
+  29            * @param  uart:初始化的串口结构体              
+  30            * @retval NULL
+  31            */
+  32          void UartInit(Uart* uart)
+  33          {
+  34   1        uint xdata BRT;
+  35   1        BRT = (65536 -  SystmeRtc / uart->_baudRate / 4 );
+  36   1        switch(uart->_uartId)
+  37   1        {
+  38   2          case 1:
+  39   2            SCON = 0x50;        //8位数据,可变波特率
+  40   2            AUXR |= 0x40;       //定时器时钟1T模式
+  41   2            AUXR &= 0xFE;       //串口1选择定时器1为波特率发生器
+  42   2            TMOD &= 0x0F;       //设置定时器模式
+  43   2            TL1 = BRT;          //设置定时初始值
+  44   2            TH1 = BRT >> 8;     //设置定时初始值
+  45   2            ET1 = 0;            //禁止定时器1中断
+  46   2            TR1 = 1;            //定时器1开始计数
+  47   2            ES = 1;
+  48   2            break;
+  49   2          case 2:
+  50   2            S2CON |= 0x10;      //8位数据,可变波特率
+  51   2            AUXR |= 0x04;       //定时器时钟1T模式
+  52   2            T2L = BRT;          //设置定时初始值
+  53   2            T2H = BRT >> 8;     //设置定时初始值
+C51 COMPILER V9.57.0.0   UART                                                              01/20/2022 17:48:11 PAGE 2   
+
+  54   2            AUXR |= 0x10;       //定时器2开始计时
+  55   2            IE2 &= ~0x04;       //禁止T2中断
+  56   2            IE2 |= 0x01;        //开启串口2中断
+  57   2            break;
+  58   2          case 3:
+  59   2            S3CON |= 0x50;      //8位数据,可变波特率
+  60   2            T3L = BRT;          //设置定时初始值
+  61   2            T3H = BRT >> 8;     //设置定时初始值
+  62   2            T4T3M |= 0x0a;      //定时器时钟1T模式并开始计时
+  63   2            IE2 &= ~0x20;       //禁止T3中断
+  64   2            IE2 |= 0x08;        //开启串口3中断
+  65   2            break;
+  66   2          case 4:
+  67   2            S4CON |= 0x50;      //8位数据,可变波特率
+  68   2            T4L = BRT;          //设置定时初始值
+  69   2            T4H = BRT >> 8;     //设置定时初始值
+  70   2            T4T3M |= 0xa0;      //定时器时钟1T模式并开始计时
+  71   2            IE2 &= ~0x40;       //禁止T4中断
+  72   2            IE2 |= 0x10;        //开启串口4中断
+  73   2            break;
+  74   2        }
+  75   1        EA = 1;
+  76   1      }
+  77          /**
+  78            * @brief  串口接收函数
+  79            * @param  uart:读取的串口结构体,读取的串口SBUF
+  80            * @retval NULL
+  81            */
+  82          void uartRead(Uart* uart,uchar buff)//串口
+  83          {
+  84   1        uart->_uartStart = 1;                                   //开始接收
+  85   1        uart->_uartTime = 0;                                    //清零计时
+  86   1        uart->_uartRead[uart->_uartSign++] = buff;  //将SBUF写入缓存
+  87   1      }
+  88          /**
+  89            * @brief  串口接收计时函数
+  90            * @param  uart:读取的串口结构体
+  91            * @retval NULL
+  92            */
+  93          void uartReadTime(Uart* uart)
+  94          {
+  95   1        if(uart->_uartStart)            //开始接收
+  96   1        {
+  97   2          uart->_uartTime++;            //接收计时
+  98   2          if(uart->_uartTime > 300)     //超出时接收完毕
+  99   2          {
+ 100   3            uart->_readFlag = 1;        //接收结束并置位
+ 101   3            uart->_uartTime = 0;
+ 102   3            uart->_uartStart = 0;
+ 103   3          }
+ 104   2        }
+ 105   1      }
+ 106          
+ 107          void uartWriteChar(Uart* uart,uchar str)
+ 108          {
+ 109   1        TR0 = 0;
+ 110   1        switch(uart->_uartId)
+ 111   1        {
+ 112   2          case 1:
+ 113   2            SBUF = str;
+ 114   2            break;
+ 115   2          case 2:
+C51 COMPILER V9.57.0.0   UART                                                              01/20/2022 17:48:11 PAGE 3   
+
+ 116   2            S2BUF = str;
+ 117   2            break;
+ 118   2          case 3:
+ 119   2            S3BUF = str;
+ 120   2            break;
+ 121   2          case 4:
+ 122   2            S4BUF = str;
+ 123   2            break;
+ 124   2        }
+ 125   1        while(uart->busy);
+ 126   1        uart->busy = 1;
+ 127   1        TR0 = 1;
+ 128   1      }
+ 129          
+ 130          void uartWriteString(Uart* uart,uchar* string)reentrant
+ 131          {
+ 132   1        while(*string!='\0')
+ 133   1        {
+ 134   2          uartWriteChar(uart,*string);
+ 135   2          string++;
+ 136   2        }
+ 137   1      }
+ 138          
+ 139          void uartWriteBuffe(Uart* uartID,Uart* uart)reentrant
+ 140          {
+ 141   1        uchar i = 0;
+ 142   1        for(i=0;i<uart->_uartSign;i++)
+ 143   1        {
+ 144   2          uartWriteChar(uartID,uart->_uartRead[i]);
+ 145   2        }
+ 146   1      }
+ 147          
+ 148          void UartRead1() interrupt 4
+ 149          {
+ 150   1        TR0 = 0;
+ 151   1        ET0 = 0;
+ 152   1        if(TI)
+ 153   1        {
+ 154   2          TI =0;
+ 155   2          uart1.busy = 0;
+ 156   2        }
+ 157   1        if(RI)
+ 158   1        {
+ 159   2          RI = 0;
+ 160   2          uart1.UartRead(&uart1,SBUF);
+ 161   2        }
+ 162   1        ET0 = 1;
+ 163   1        TR0 = 1;
+ 164   1      }
+ 165          
+ 166          //void UartRead2() interrupt 8
+ 167          //{
+ 168          //  if(S2CON & 0x02)
+ 169          //  {
+ 170          //    S2CON &= ~0x02;
+ 171          //    uart2.busy = 0;
+ 172          //  }
+ 173          //  if(S2CON & 0x01)
+ 174          //  {
+ 175          //    S2CON &= ~0x01;
+ 176          //    uart2.UartRead(&uart2,S2BUF);
+ 177          //  }
+C51 COMPILER V9.57.0.0   UART                                                              01/20/2022 17:48:11 PAGE 4   
+
+ 178          //}
+ 179          
+ 180          //void UartRead3() interrupt 17
+ 181          //{
+ 182          //  if(S3CON & 0x02)
+ 183          //  {
+ 184          //    S3CON &= ~0x02;
+ 185          //    uart3.busy = 0;
+ 186          //  }
+ 187          //  if(S2CON & 0x01)
+ 188          //  {
+ 189          //    S2CON &= ~0x01;
+ 190          //    uart2.UartRead(&uart2,S3BUF);
+ 191          //  }
+ 192          //}
+ 193          
+ 194          void UartRead4() interrupt 18
+ 195          {
+ 196   1        if(S4CON & 0x02)
+ 197   1        {
+ 198   2          S4CON &= ~0x02;
+ 199   2          uart4.busy = 0;
+ 200   2        }
+ 201   1        if(S4CON & 0x01)
+ 202   1        {
+ 203   2          S4CON &= ~0x01;
+ 204   2          uart4.UartRead(&uart4,S4BUF);
+ 205   2        }
+ 206   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    986    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =    180       2
+   PDATA SIZE       =   ----      11
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

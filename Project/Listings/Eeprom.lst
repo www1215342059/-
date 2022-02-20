@@ -1,0 +1,27 @@
+C51 COMPILER V9.57.0.0   EEPROM                                                            01/20/2022 17:48:09 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE EEPROM
+OBJECT MODULE PLACED IN .\Objects\Eeprom.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE ..\APP\Eeprom\Eeprom.c COMPACT OPTIMIZE(8,SPEED) BROWSE INCDIR(..\APP;..\.
+                    -.\Ð¬¹ñÖ÷¿Ø;..\APP\ADC;..\APP\Eeprom;..\APP\Fingerprint;..\APP\System;..\APP\System;..\APP\Uart;..\APP\WIFI;..\APP\LCD;..
+                    -\APP\SPI;..\APP\GUI;..\APP\Time;..\APP\H) DEBUG OBJECTEXTEND PRINT(.\Listings\Eeprom.lst) TABS(2) OBJECT(.\Objects\Eepro
+                    -m.obj)
+
+line level    source
+
+   1          #include "Eeprom.h"
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   ----    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

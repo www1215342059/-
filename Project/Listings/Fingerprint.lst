@@ -1,0 +1,117 @@
+C51 COMPILER V9.57.0.0   FINGERPRINT                                                       01/20/2022 17:48:10 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE FINGERPRINT
+OBJECT MODULE PLACED IN .\Objects\Fingerprint.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE ..\APP\Fingerprint\Fingerprint.c COMPACT OPTIMIZE(8,SPEED) BROWSE INCDIR(.
+                    -.\APP;..\..\Ь������;..\APP\ADC;..\APP\Eeprom;..\APP\Fingerprint;..\APP\System;..\APP\System;..\APP\Uart;..\APP\WIFI;..\
+                    -APP\LCD;..\APP\SPI;..\APP\GUI;..\APP\Time;..\APP\H) DEBUG OBJECTEXTEND PRINT(.\Listings\Fingerprint.lst) TABS(2) OBJECT(
+                    -.\Objects\Fingerprint.obj)
+
+line level    source
+
+   1          #include "Fingerprint.h"
+   2          #include "FingerprintError.h"
+   3          
+   4          Finger xdata Finger1;            //实例化指纹对象
+   5          Uart *uart = UartCall(UartPort); //获取端口号
+   6          
+   7          void fingerPower(uchar power)
+   8          {
+   9   1          fingerpower = power;
+  10   1      }
+  11          
+  12          void FingerUart(uchar num[])
+  13          {
+  14   1          uchar i;
+  15   1          for (i = 0; i < sizeof(num); i++)
+  16   1          {
+  17   2              uart->UartWriteChar(uart, num[i]);
+  18   2          }
+  19   1      }
+  20          
+  21          void FingerInstruction(uchar nums[])
+  22          {
+  23   1          FingerUart(fingerprintHead); //发送包头
+  24   1          FingerUart(fingerprintAddr); //发送指纹模块地址
+  25   1          FingerUart(nums);            //发送指令
+  26   1          FingerUart(fingerprintSum);  //发送校验和
+  27   1      }
+  28          
+  29          void fingerError(uchar errors)
+  30          {
+  31   1          uchar i;
+  32   1          for (i = 0; i < 25; i++) //遍历错误信息组
+  33   1          {
+  34   2              if (FringeErrors[i]._ErrorId == errors) //查找对应错误信息
+  35   2              {
+  36   3                  //向屏幕输出错误信息
+  37   3                  return;
+  38   3              }
+  39   2          }
+  40   1          //程序执行到此处表示错误信息在列表中未查找到，此时应输出"未知错误"提�
+             -�!
+  41   1      }
+  42          
+  43          uchar fingerRegistered()
+  44          {
+  45   1          uchar xdata num[sizeof(fingerprintRegister)]; //定义与指纹注册命令串相同长度的数组
+  46   1          switch (Finger1._fingerSwitch)
+  47   1          {
+  48   2          case 0:
+  49   2              numberscopy(num, fingerprintRegister, sizeof(fingerprintRegister)); //复制命令串
+  50   2              num[5] = Finger1._fingerId;                                         //获取当前指纹模块的�
+             -��许存储ID
+C51 COMPILER V9.57.0.0   FINGERPRINT                                                       01/20/2022 17:48:10 PAGE 2   
+
+  51   2              FingerInstruction(num);                                             //发送注册命令
+  52   2              Finger1._fingerSwitch = 1;                                          //状态机状态更新
+  53   2              break;
+  54   2          case 1:
+  55   2              while (uart->_uartRead[10] != 0x03)
+  56   2              {
+  57   3                  if (uart->_readFlag)
+  58   3                  {
+  59   4                      uart->_readFlag = 0;
+  60   4                      if (uart->_uartRead[10] == 0x02)
+  61   4                          ; //输出请重按提示
+  62   4                  }
+  63   3              }
+  64   2              if (uart->_uartRead[9] == 0x00)
+  65   2                  Finger1._fingerSwitch = 2;
+  66   2              else
+  67   2                  fingerError(uart->_uartRead[9]); //汇报错误信息
+  68   2      
+  69   2              break;
+  70   2          case 2:
+  71   2              /*  if ()
+  72   2              {
+  73   2              } */
+  74   2              break;
+  75   2          }
+  76   1          return 0;
+  77   1      }
+  78          
+  79          /* uchar fingerPairing()
+  80          {
+  81              ;
+  82          }
+  83          
+  84          uchar fingerNumber()
+  85          {
+  86              ;
+  87          } */
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    300    ----
+   CONSTANT SIZE    =    298    ----
+   XDATA SIZE       =     32       8
+   PDATA SIZE       =     71       7
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

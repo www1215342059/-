@@ -1,0 +1,695 @@
+LX51 LINKER/LOCATER V4.66.87.0                                                          02/19/2022  23:35:29  PAGE 1
+
+
+LX51 LINKER/LOCATER V4.66.87.0, INVOKED BY:
+D:\KEIL5\C51\BIN\LX51.EXE .\build\Target 1\__\APP\ADC\Adc.o, .\build\Target 1\__\APP\Eeprom\Eeprom.o, .\build\Target 1\_
+>> _\APP\Fingerprint\Fingerprint.o, .\build\Target 1\__\APP\GUI\GUI.o, .\build\Target 1\__\APP\LCD\ST7789V.o, .\build\Ta
+>> rget 1\__\APP\SPI\SPI.o, .\build\Target 1\__\APP\System\System.o, .\build\Target 1\__\APP\Time\Time.o, .\build\Target
+>>  1\__\APP\Uart\Uart.o, .\build\Target 1\__\APP\WIFI\WIFI.o, .\build\Target 1\__\APP\mystring.o, .\build\Target 1\__\U
+>> ser\main.o TO .\build\Target 1\Project PRINT (.\build\Target 1\Project.map) REMOVEUNUSED
+
+
+CPU MODE:     8051 MODE
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\build\Target 1\__\APP\ADC\Adc.o (ADC)
+         COMMENT TYPE 0: C51 V9.57.0.0
+  .\build\Target 1\__\APP\Eeprom\Eeprom.o (EEPROM)
+         COMMENT TYPE 0: C51 V9.57.0.0
+  .\build\Target 1\__\APP\Fingerprint\Fingerprint.o (FINGERPRINT)
+         COMMENT TYPE 0: C51 V9.57.0.0
+  .\build\Target 1\__\APP\GUI\GUI.o (GUI)
+         COMMENT TYPE 0: C51 V9.57.0.0
+  .\build\Target 1\__\APP\LCD\ST7789V.o (ST7789V)
+         COMMENT TYPE 0: C51 V9.57.0.0
+  .\build\Target 1\__\APP\SPI\SPI.o (SPI)
+         COMMENT TYPE 0: C51 V9.57.0.0
+  .\build\Target 1\__\APP\System\System.o (SYSTEM)
+         COMMENT TYPE 0: C51 V9.57.0.0
+  .\build\Target 1\__\APP\Time\Time.o (TIME)
+         COMMENT TYPE 0: C51 V9.57.0.0
+  .\build\Target 1\__\APP\Uart\Uart.o (UART)
+         COMMENT TYPE 0: C51 V9.57.0.0
+  .\build\Target 1\__\APP\WIFI\WIFI.o (WIFI)
+         COMMENT TYPE 0: C51 V9.57.0.0
+  .\build\Target 1\__\APP\mystring.o (MYSTRING)
+         COMMENT TYPE 0: C51 V9.57.0.0
+  .\build\Target 1\__\User\main.o (MAIN)
+         COMMENT TYPE 0: C51 V9.57.0.0
+  D:\KEIL5\C51\LIB\C51S.LIB (?C_STARTUP)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?CLDPTR)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?CLDOPTR)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?CLDIOPTR)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?CSTPTR)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?CSTOPTR)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?IMUL)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?ILDOPTR)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?IILDOPTR)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?ISTOPTR)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?ULDIV)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?LSTOPTR)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?LLDOPTR0)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?OFFXADD)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?PLDPTR)
+LX51 LINKER/LOCATER V4.66.87.0                                                        02/19/2022  23:35:29  PAGE 2
+
+
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?PLDOPTR)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?PSTOPTR)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?ICALL)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C_IBP)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C_INIT)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?IILDX)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?LLDIDATA0)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?LLDXDATA0)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?LLDPDATA0)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?LLDCODE0)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?LSTIDATA)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?LSTXDATA)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?LSTPDATA)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?PLDIDATA)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?PSTIDATA)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?PLDXDATA)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?PSTXDATA)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?PLDPDATA)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?PSTPDATA)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?PLDCODE)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+
+
+ACTIVE MEMORY CLASSES OF MODULE:  .\build\Target 1\Project (ADC)
+
+BASE        START       END         USED      MEMORY CLASS
+==========================================================
+C:000000H   C:000000H   C:00FFFFH   000A16H   CODE
+I:000000H   I:000000H   I:00007FH   00005BH   DATA
+C:000000H   C:000000H   C:00FFFFH   00012AH   CONST
+X:000000H   X:000000H   X:00FFFFH   0000EFH   XDATA
+I:000000H   I:000000H   I:0000FFH   000001H   IDATA
+
+
+MEMORY MAP OF MODULE:  .\build\Target 1\Project (ADC)
+
+
+START     STOP      LENGTH    ALIGN  RELOC    MEMORY CLASS   SEGMENT NAME
+=========================================================================
+
+* * * * * * * * * * *   D A T A   M E M O R Y   * * * * * * * * * * * * *
+000000H   000007H   000008H   ---    AT..     DATA           "REG BANK 0"
+000008H   00004EH   000047H   BYTE   UNIT     DATA           ?DT?FINGERPRINT
+00004FH   000059H   00000BH   BYTE   UNIT     DATA           _DATA_GROUP_
+00005AH   00005AH   000001H   BYTE   UNIT     DATA           ?C?LIB_DATA
+LX51 LINKER/LOCATER V4.66.87.0                                                        02/19/2022  23:35:29  PAGE 3
+
+
+00005BH   00005BH   000001H   BYTE   UNIT     IDATA          ?STACK
+
+* * * * * * * * * * *   C O D E   M E M O R Y   * * * * * * * * * * * * *
+000000H   000002H   000003H   ---    OFFS..   CODE           ?CO??C_STARTUP?0
+000003H   000008H   000006H   BYTE   UNIT     CODE           ?PR?_LCD_BACK?ST7789V
+000009H   00000AH   000002H   ---    ---      **GAP**
+00000BH   00000DH   000003H   BYTE   OFFS..   CODE           ?TIME?0000B
+00000EH   000022H   000015H   BYTE   UNIT     CODE           ?PR?TIMEINIT?TIME
+000023H   000025H   000003H   BYTE   OFFS..   CODE           ?UART?00023
+000026H   00008FH   00006AH   BYTE   UNIT     CODE           ?PR?UARTREAD1?UART
+000090H   000092H   000003H   ---    ---      **GAP**
+000093H   000095H   000003H   BYTE   OFFS..   CODE           ?UART?00093
+000096H   000499H   000404H   BYTE   UNIT     CODE           ?C?LIB_CODE
+00049AH   000556H   0000BDH   BYTE   UNIT     CODE           ?PR?_UARTSTRUCTINIT?UART
+000557H   00060CH   0000B6H   BYTE   UNIT     CODE           ?PR?_UARTINIT?UART
+00060DH   0006B0H   0000A4H   BYTE   UNIT     CODE           ?PR?TIME0?TIME
+0006B1H   00074AH   00009AH   BYTE   UNIT     CODE           ?PR?MAIN?MAIN
+00074BH   0007D6H   00008CH   BYTE   UNIT     CODE           ?C_C51STARTUP
+0007D7H   00084BH   000075H   BYTE   UNIT     CODE           ?PR?_?UARTWRITEBUFFE?UART
+00084CH   0008B3H   000068H   BYTE   UNIT     CODE           ?PR?UARTREAD4?UART
+0008B4H   000916H   000063H   BYTE   UNIT     CODE           ?C_INITSEG
+000917H   00095EH   000048H   BYTE   UNIT     CODE           ?PR?_?UARTWRITESTRING?UART
+00095FH   000998H   00003AH   BYTE   UNIT     CODE           ?PR?_UARTREADTIME?UART
+000999H   0009CBH   000033H   BYTE   UNIT     CODE           ?PR?_UARTWRITECHAR?UART
+0009CCH   0009F8H   00002DH   BYTE   UNIT     CODE           ?PR?_UARTREAD?UART
+0009F9H   000A0EH   000016H   BYTE   UNIT     CODE           ?PR?IOINIT?MAIN
+000A0FH   000A14H   000006H   BYTE   UNIT     CODE           ?PR?_LCD_POWER?ST7789V
+000A15H   000A1AH   000006H   BYTE   UNIT     CODE           ?PR?_LCD_RES?ST7789V
+000A1BH   000B44H   00012AH   BYTE   UNIT     CONST          ?CO?FINGERPRINT
+
+* * * * * * * * * * *  X D A T A   M E M O R Y  * * * * * * * * * * * * *
+000000H   0000B3H   0000B4H   BYTE   UNIT     XDATA          ?XD?UART
+0000B4H   0000D3H   000020H   BYTE   UNIT     XDATA          ?XD?FINGERPRINT
+0000D4H   0000E8H   000015H   BYTE   UNIT     XDATA          ?XD?ST7789V
+0000E9H   0000ECH   000004H   BYTE   UNIT     XDATA          ?XD?TIME
+0000EDH   0000EEH   000002H   BYTE   UNIT     XDATA          _XDATA_GROUP_
+
+* * * * * * * * *   R E M O V E D     S E G M E N T S   * * * * * * * *
+   *DEL*:           000006H   BYTE   UNIT     CODE           ?PR?_FINGERPOWER?FINGERPRINT
+   *DEL*:           000048H   BYTE   UNIT     CODE           ?PR?_FINGERUART?FINGERPRINT
+   *DEL*:           000004H   BYTE   UNIT     DATA           ?DT?_FINGERUART?FINGERPRINT
+   *DEL*:           00002AH   BYTE   UNIT     CODE           ?PR?_FINGERINSTRUCTION?FINGERPRINT
+   *DEL*:           000003H   BYTE   UNIT     DATA           ?DT?_FINGERINSTRUCTION?FINGERPRINT
+   *DEL*:           000013H   BYTE   UNIT     CODE           ?PR?_FINGERERROR?FINGERPRINT
+   *DEL*:           000079H   BYTE   UNIT     CODE           ?PR?FINGERREGISTERED?FINGERPRINT
+   *DEL*:           000008H   BYTE   UNIT     XDATA          ?XD?FINGERREGISTERED?FINGERPRINT
+   *DEL*:           00007FH   BYTE   UNIT     CODE           ?PR?_GUI_FILL?GUI
+   *DEL*:           00000AH   BYTE   UNIT     DATA           ?DT?_GUI_FILL?GUI
+   *DEL*:           00002BH   BYTE   UNIT     CODE           ?PR?_GUI_DRAWPOINT?GUI
+   *DEL*:           000002H   BYTE   UNIT     DATA           ?DT?_GUI_DRAWPOINT?GUI
+   *DEL*:           0001CDH   BYTE   UNIT     CODE           ?PR?_GUI_DRAWLINE?GUI
+   *DEL*:           00000AH   BYTE   UNIT     DATA           ?DT?_GUI_DRAWLINE?GUI
+   *DEL*:           00006CH   BYTE   UNIT     CODE           ?PR?_GUI_DRAWRECTANGLE?GUI
+   *DEL*:           00000AH   BYTE   UNIT     DATA           ?DT?_GUI_DRAWRECTANGLE?GUI
+   *DEL*:           000154H   BYTE   UNIT     CODE           ?PR?_GUI_DRAWCIRCLE?GUI
+   *DEL*:           000007H   BYTE   UNIT     DATA           ?DT?_GUI_DRAWCIRCLE?GUI
+   *DEL*:           0000D4H   BYTE   UNIT     CODE           ?PR?_GUI_SHOWCHINESE?GUI
+   *DEL*:           00000DH   BYTE   UNIT     DATA           ?DT?_GUI_SHOWCHINESE?GUI
+   *DEL*:           000231H   BYTE   UNIT     CODE           ?PR?_GUI_SHOWCHINESE12X12?GUI
+   *DEL*:           00000DH   BYTE   UNIT     DATA           ?DT?_GUI_SHOWCHINESE12X12?GUI
+   *DEL*:           000231H   BYTE   UNIT     CODE           ?PR?_GUI_SHOWCHINESE16X16?GUI
+   *DEL*:           00000DH   BYTE   UNIT     DATA           ?DT?_GUI_SHOWCHINESE16X16?GUI
+   *DEL*:           000235H   BYTE   UNIT     CODE           ?PR?_GUI_SHOWCHINESE24X24?GUI
+   *DEL*:           00000DH   BYTE   UNIT     DATA           ?DT?_GUI_SHOWCHINESE24X24?GUI
+   *DEL*:           000235H   BYTE   UNIT     CODE           ?PR?_GUI_SHOWCHINESE32X32?GUI
+LX51 LINKER/LOCATER V4.66.87.0                                                        02/19/2022  23:35:29  PAGE 4
+
+
+   *DEL*:           00000DH   BYTE   UNIT     DATA           ?DT?_GUI_SHOWCHINESE32X32?GUI
+   *DEL*:           000217H   BYTE   UNIT     CODE           ?PR?_GUI_SHOWCHAR?GUI
+   *DEL*:           00000BH   BYTE   UNIT     DATA           ?DT?_GUI_SHOWCHAR?GUI
+   *DEL*:           000052H   BYTE   UNIT     CODE           ?PR?_GUI_SHOWSTRING?GUI
+   *DEL*:           00000DH   BYTE   UNIT     DATA           ?DT?_GUI_SHOWSTRING?GUI
+   *DEL*:           00391CH   BYTE   UNIT     CONST          ?CO?GUI
+   *DEL*:           000004H   BYTE   UNIT     XDATA          ?XD?_GUI_FILL?GUI
+   *DEL*:           000014H   BYTE   UNIT     XDATA          ?XD?_GUI_DRAWLINE?GUI
+   *DEL*:           000004H   BYTE   UNIT     XDATA          ?XD?_GUI_DRAWCIRCLE?GUI
+   *DEL*:           00000BH   BYTE   UNIT     XDATA          ?XD?_GUI_SHOWCHINESE12X12?GUI
+   *DEL*:           00000BH   BYTE   UNIT     XDATA          ?XD?_GUI_SHOWCHINESE16X16?GUI
+   *DEL*:           00000BH   BYTE   UNIT     XDATA          ?XD?_GUI_SHOWCHINESE24X24?GUI
+   *DEL*:           00000BH   BYTE   UNIT     XDATA          ?XD?_GUI_SHOWCHINESE32X32?GUI
+   *DEL*:           00000AH   BYTE   UNIT     XDATA          ?XD?_GUI_SHOWCHAR?GUI
+   *DEL*:           000020H   BYTE   UNIT     CODE           ?PR?DELAY1MS?ST7789V
+   *DEL*:           000006H   BYTE   UNIT     CODE           ?PR?_LCD_CS?ST7789V
+   *DEL*:           000006H   BYTE   UNIT     CODE           ?PR?_LCD_MOSI?ST7789V
+   *DEL*:           000006H   BYTE   UNIT     CODE           ?PR?_LCD_SCLK?ST7789V
+   *DEL*:           000039H   BYTE   UNIT     CODE           ?PR?LCDSPIINIT?ST7789V
+   *DEL*:           00001BH   BYTE   UNIT     CODE           ?PR?_LCD_WRITE_DATA?ST7789V
+   *DEL*:           00000DH   BYTE   UNIT     CODE           ?PR?_LCD_WRITE_WORD?ST7789V
+   *DEL*:           000002H   BYTE   UNIT     DATA           ?DT?_LCD_WRITE_WORD?ST7789V
+   *DEL*:           000008H   BYTE   UNIT     CODE           ?PR?_LCD_WRITE_CMD?ST7789V
+   *DEL*:           000037H   BYTE   UNIT     CODE           ?PR?_LCD_ADDR_SET?ST7789V
+   *DEL*:           000008H   BYTE   UNIT     DATA           ?DT?_LCD_ADDR_SET?ST7789V
+   *DEL*:           000180H   BYTE   UNIT     CODE           ?PR?LCD_INIT?ST7789V
+   *DEL*:           000002H   BYTE   UNIT     XDATA          ?XD?DELAY1MS?ST7789V
+   *DEL*:           000087H   BYTE   UNIT     CODE           ?PR?_SPIWRITE?SPI
+   *DEL*:           000005H   BYTE   UNIT     DATA           ?DT?_SPIWRITE?SPI
+   *DEL*:           00002EH   BYTE   UNIT     CODE           ?PR?_NUMBERSCOPY?MYSTRING
+   *DEL*:           000007H   BYTE   UNIT     DATA           ?DT?_NUMBERSCOPY?MYSTRING
+
+
+
+OVERLAY MAP OF MODULE:   .\build\Target 1\Project (ADC)
+
+
+FUNCTION/MODULE                     DATA_GROUP   XDATA_GROUP
+--> CALLED FUNCTION/MODULE          START  STOP  START  STOP
+============================================================
+TIME0/TIME                          ----- -----  ----- -----
+
+*** NEW ROOT **********************
+
+UARTREAD1/UART                      ----- -----  ----- -----
+
+*** NEW ROOT **********************
+
+UARTREAD4/UART                      ----- -----  ----- -----
+
+*** NEW ROOT **********************
+
+?C_C51STARTUP                       ----- -----  ----- -----
+  +--> MAIN/MAIN
+  +--> ?C_INITSEG
+
+MAIN/MAIN                           ----- -----  ----- -----
+  +--> IOINIT/MAIN
+  +--> _UARTSTRUCTINIT/UART
+  +--> TIMEINIT/TIME
+
+IOINIT/MAIN                         ----- -----  ----- -----
+
+_UARTSTRUCTINIT/UART                004FH 0056H  ----- -----
+  +--> _UARTREAD/UART
+LX51 LINKER/LOCATER V4.66.87.0                                                        02/19/2022  23:35:29  PAGE 5
+
+
+  +--> _?UARTWRITESTRING/UART
+  +--> _UARTWRITECHAR/UART
+  +--> _?UARTWRITEBUFFE/UART
+  +--> _UARTREADTIME/UART
+  +--> _UARTINIT/UART
+
+_UARTREAD/UART                      ----- -----  ----- -----
+
+_?UARTWRITESTRING/UART              ----- -----  ----- -----
+  +--> _UARTWRITECHAR/UART
+
+_UARTWRITECHAR/UART                 ----- -----  ----- -----
+
+_?UARTWRITEBUFFE/UART               ----- -----  ----- -----
+  +--> _UARTWRITECHAR/UART
+
+_UARTREADTIME/UART                  ----- -----  ----- -----
+
+_UARTINIT/UART                      0057H 0059H  00EDH 00EEH
+
+TIMEINIT/TIME                       ----- -----  ----- -----
+
+?C_INITSEG                          ----- -----  ----- -----
+  +--> _LCD_BACK/ST7789V
+  +--> _LCD_POWER/ST7789V
+  +--> _LCD_RES/ST7789V
+
+_LCD_BACK/ST7789V                   ----- -----  ----- -----
+
+_LCD_POWER/ST7789V                  ----- -----  ----- -----
+
+_LCD_RES/ST7789V                    ----- -----  ----- -----
+
+
+
+PUBLIC SYMBOLS OF MODULE:  .\build\Target 1\Project (ADC)
+
+
+      VALUE       CLASS    TYPE      PUBLIC SYMBOL NAME
+      =================================================
+*DEL*:00000000H   DATA     BYTE      ?_GUI_DrawCircle?BYTE
+*DEL*:00000000H   DATA     BYTE      ?_GUI_DrawLine?BYTE
+*DEL*:00000000H   DATA     BYTE      ?_GUI_DrawRectangle?BYTE
+*DEL*:00000000H   DATA     BYTE      ?_GUI_Fill?BYTE
+*DEL*:00000000H   DATA     BYTE      ?_GUI_ShowChar?BYTE
+*DEL*:00000000H   DATA     BYTE      ?_GUI_ShowChinese12x12?BYTE
+*DEL*:00000000H   DATA     BYTE      ?_GUI_ShowChinese16x16?BYTE
+*DEL*:00000000H   DATA     BYTE      ?_GUI_ShowChinese24x24?BYTE
+*DEL*:00000000H   DATA     BYTE      ?_GUI_ShowChinese32x32?BYTE
+*DEL*:00000000H   DATA     BYTE      ?_GUI_ShowChinese?BYTE
+*DEL*:00000000H   DATA     BYTE      ?_GUI_ShowString?BYTE
+*DEL*:00000000H   DATA     BYTE      ?_LCD_Addr_Set?BYTE
+*DEL*:00000000H   DATA     BYTE      ?_numberscopy?BYTE
+      0000004FH   DATA     BYTE      ?_UartStructInit?BYTE
+      010000DCH   CODE     ---       ?C?CLDIOPTR
+      010000AFH   CODE     ---       ?C?CLDOPTR
+      01000096H   CODE     ---       ?C?CLDPTR
+      00000000H   NUMBER   ---       ?C?CODESEG
+      01000125H   CODE     ---       ?C?CSTOPTR
+      01000113H   CODE     ---       ?C?CSTPTR
+      010003E2H   CODE     ---       ?C?ICALL
+      010003E6H   CODE     ---       ?C?ICALL2
+      01000191H   CODE     ---       ?C?IILDOPTR
+      010003E8H   CODE     ---       ?C?IILDX
+      01000159H   CODE     ---       ?C?ILDOPTR
+LX51 LINKER/LOCATER V4.66.87.0                                                        02/19/2022  23:35:29  PAGE 6
+
+
+      01000147H   CODE     ---       ?C?IMUL
+      010001DEH   CODE     ---       ?C?ISTOPTR
+      01000424H   CODE     ---       ?C?LLDCODE0
+      010003FEH   CODE     ---       ?C?LLDIDATA0
+      010002FDH   CODE     ---       ?C?LLDOPTR0
+      01000417H   CODE     ---       ?C?LLDPDATA0
+      0100040BH   CODE     ---       ?C?LLDXDATA0
+      01000434H   CODE     ---       ?C?LSTIDATA
+      010002D9H   CODE     ---       ?C?LSTOPTR
+      0100044CH   CODE     ---       ?C?LSTPDATA
+      01000440H   CODE     ---       ?C?LSTXDATA
+      0100032DH   CODE     ---       ?C?OFFXADD
+      0100048EH   CODE     ---       ?C?PLDCODE
+      01000458H   CODE     ---       ?C?PLDIDATA
+      01000359H   CODE     ---       ?C?PLDOPTR
+      0100047CH   CODE     ---       ?C?PLDPDATA
+      01000339H   CODE     ---       ?C?PLDPTR
+      0100046AH   CODE     ---       ?C?PLDXDATA
+      01000461H   CODE     ---       ?C?PSTIDATA
+      01000389H   CODE     ---       ?C?PSTOPTR
+      01000485H   CODE     ---       ?C?PSTPDATA
+      01000473H   CODE     ---       ?C?PSTXDATA
+      01000247H   CODE     ---       ?C?ULDIV
+      00000000H   NUMBER   ---       ?C?XDATASEG
+      0000005AH   DATA     ---       ?C_IBP
+      01000792H   CODE     ---       ?C_START
+      01000000H   CODE     ---       ?C_STARTUP
+      010007D7H   CODE     ---       _?uartWriteBuffe
+      01000917H   CODE     ---       _?uartWriteString
+*DEL*:00000000H   CODE     ---       _fingerError
+*DEL*:00000000H   CODE     ---       _FingerInstruction
+*DEL*:00000000H   CODE     ---       _fingerPower
+*DEL*:00000000H   CODE     ---       _FingerUart
+*DEL*:00000000H   CODE     ---       _GUI_DrawCircle
+*DEL*:00000000H   CODE     ---       _GUI_DrawLine
+*DEL*:00000015H   CODE     ---       _GUI_DrawPoint
+*DEL*:00000000H   CODE     ---       _GUI_DrawRectangle
+*DEL*:00000000H   CODE     ---       _GUI_Fill
+*DEL*:00000000H   CODE     ---       _GUI_ShowChar
+*DEL*:00000000H   CODE     ---       _GUI_ShowChinese
+*DEL*:00000000H   CODE     ---       _GUI_ShowChinese12x12
+*DEL*:00000000H   CODE     ---       _GUI_ShowChinese16x16
+*DEL*:00000000H   CODE     ---       _GUI_ShowChinese24x24
+*DEL*:00000000H   CODE     ---       _GUI_ShowChinese32x32
+*DEL*:00000000H   CODE     ---       _GUI_ShowString
+*DEL*:00000000H   CODE     ---       _LCD_Addr_Set
+      01000003H   CODE     ---       _LCD_BACK
+*DEL*:00000000H   CODE     ---       _LCD_CS
+*DEL*:00000000H   CODE     ---       _LCD_MOSI
+      01000A0FH   CODE     ---       _LCD_POWER
+      01000A15H   CODE     ---       _LCD_RES
+*DEL*:00000000H   CODE     ---       _LCD_SCLK
+*DEL*:00000000H   CODE     ---       _LCD_Write_Cmd
+*DEL*:00000000H   CODE     ---       _LCD_Write_Data
+*DEL*:00000000H   CODE     ---       _LCD_Write_Word
+*DEL*:00000000H   CODE     ---       _numberscopy
+*DEL*:00000000H   CODE     ---       _SpiWrite
+      01000557H   CODE     ---       _UartInit
+      010009CCH   CODE     ---       _uartRead
+      0100095FH   CODE     ---       _uartReadTime
+      0100049AH   CODE     ---       _UartStructInit
+      01000999H   CODE     ---       _uartWriteChar
+*DEL*:00000000H   CONST    ---       ascii_1206
+*DEL*:00000474H   CONST    ---       ascii_1608
+*DEL*:00000A64H   CONST    ---       ascii_2412
+LX51 LINKER/LOCATER V4.66.87.0                                                        02/19/2022  23:35:29  PAGE 7
+
+
+*DEL*:00001C34H   CONST    ---       ascii_3216
+*DEL*:00000003H   CODE     ---       Delay1ms
+      020000B4H   XDATA    ---       Finger1
+      01000B09H   CONST    ---       fingerprintAddr
+      01000B30H   CONST    ---       fingerprintCancel
+      01000B38H   CONST    ---       fingerprintCheck
+      01000B2CH   CONST    ---       fingerprintDelete
+      01000B3CH   CONST    ---       fingerprintDocking
+      01000B34H   CONST    ---       fingerprintDormancy
+      01000B07H   CONST    ---       fingerprintHead
+      01000B40H   CONST    ---       fingerprintIdentity
+      01000B28H   CONST    ---       fingerprintNumber
+      01000B17H   CONST    ---       fingerprintPairing
+      01000B0FH   CONST    ---       fingerprintRegister
+      01000B20H   CONST    ---       fingerprintRemove
+      01000B0DH   CONST    ---       fingerprintSum
+*DEL*:00000000H   CODE     ---       fingerRegistered
+      0000000BH   DATA     ---       FringeErrors
+      010009F9H   CODE     ---       IoInit
+*DEL*:00000000H   CODE     ---       LCD_Init
+      020000D4H   XDATA    ---       Lcd_Power
+      020000DDH   XDATA    ---       LcdSpi
+*DEL*:00000000H   CODE     ---       LcdSpiInit
+      010006B1H   CODE     ---       main
+*DEL*:000033F4H   CONST    ---       tfont12
+*DEL*:00003476H   CONST    ---       tfont16
+*DEL*:00003520H   CONST    ---       tfont24
+*DEL*:00003692H   CONST    ---       tfont32
+      0100060DH   CODE     ---       Time0
+      0100000EH   CODE     ---       TimeInit
+      020000E9H   XDATA    WORD      times
+      020000EBH   XDATA    WORD      timesindex
+      00000008H   DATA     ---       uart
+      02000000H   XDATA    ---       uart1
+      0200005AH   XDATA    ---       uart4
+      01000026H   CODE     ---       UartRead1
+      0100084CH   CODE     ---       UartRead4
+
+
+
+SYMBOL TABLE OF MODULE:  .\build\Target 1\Project (ADC)
+
+      VALUE       REP       CLASS    TYPE      SYMBOL NAME
+      ====================================================
+      ---         MODULE    ---      ---       ADC
+
+      ---         MODULE    ---      ---       EEPROM
+
+      ---         MODULE    ---      ---       FINGERPRINT
+      0000000BH   PUBLIC    DATA     ---       FringeErrors
+      00000008H   PUBLIC    DATA     ---       uart
+      020000B4H   PUBLIC    XDATA    ---       Finger1
+      01000B40H   PUBLIC    CONST    ---       fingerprintIdentity
+      01000B3CH   PUBLIC    CONST    ---       fingerprintDocking
+      01000B38H   PUBLIC    CONST    ---       fingerprintCheck
+      01000B34H   PUBLIC    CONST    ---       fingerprintDormancy
+      01000B30H   PUBLIC    CONST    ---       fingerprintCancel
+      01000B2CH   PUBLIC    CONST    ---       fingerprintDelete
+      01000B28H   PUBLIC    CONST    ---       fingerprintNumber
+      01000B20H   PUBLIC    CONST    ---       fingerprintRemove
+      01000B17H   PUBLIC    CONST    ---       fingerprintPairing
+      01000B0FH   PUBLIC    CONST    ---       fingerprintRegister
+      01000B0DH   PUBLIC    CONST    ---       fingerprintSum
+      01000B09H   PUBLIC    CONST    ---       fingerprintAddr
+      01000B07H   PUBLIC    CONST    ---       fingerprintHead
+LX51 LINKER/LOCATER V4.66.87.0                                                        02/19/2022  23:35:29  PAGE 8
+
+
+      00000006H   SYMBOL    DATA     VOID      i
+
+      ---         MODULE    ---      ---       GUI
+
+      ---         MODULE    ---      ---       ST7789V
+      020000DDH   PUBLIC    XDATA    ---       LcdSpi
+      020000D4H   PUBLIC    XDATA    ---       Lcd_Power
+      01000A15H   PUBLIC    CODE     ---       _LCD_RES
+      01000A0FH   PUBLIC    CODE     ---       _LCD_POWER
+      01000003H   PUBLIC    CODE     ---       _LCD_BACK
+
+      01000003H   BLOCK     CODE     ---       LVL=0
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      01000A0FH   BLOCK     CODE     ---       LVL=0
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      01000A15H   BLOCK     CODE     ---       LVL=0
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      ---         MODULE    ---      ---       SPI
+
+      ---         MODULE    ---      ---       SYSTEM
+
+      ---         MODULE    ---      ---       TIME
+      020000EBH   PUBLIC    XDATA    WORD      timesindex
+      020000E9H   PUBLIC    XDATA    WORD      times
+      0100060DH   PUBLIC    CODE     ---       Time0
+      0100000EH   PUBLIC    CODE     ---       TimeInit
+
+      0100000EH   BLOCK     CODE     ---       LVL=0
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      0100060DH   BLOCK     CODE     ---       LVL=0
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      ---         MODULE    ---      ---       UART
+      0200005AH   PUBLIC    XDATA    ---       uart4
+      02000000H   PUBLIC    XDATA    ---       uart1
+      0100084CH   PUBLIC    CODE     ---       UartRead4
+      01000026H   PUBLIC    CODE     ---       UartRead1
+      010007D7H   PUBLIC    CODE     ---       _?uartWriteBuffe
+      01000917H   PUBLIC    CODE     ---       _?uartWriteString
+      01000999H   PUBLIC    CODE     ---       _uartWriteChar
+      0100095FH   PUBLIC    CODE     ---       _uartReadTime
+      010009CCH   PUBLIC    CODE     ---       _uartRead
+      01000557H   PUBLIC    CODE     ---       _UartInit
+      0000004FH   PUBLIC    DATA     BYTE      ?_UartStructInit?BYTE
+      0100049AH   PUBLIC    CODE     ---       _UartStructInit
+
+      0100049AH   BLOCK     CODE     ---       LVL=0
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      01000557H   BLOCK     CODE     ---       LVL=0
+      0100055DH   BLOCK     CODE     NEAR LAB  LVL=1
+      020000EDH   SYMBOL    XDATA    VOID      BRT
+      ---         BLOCKEND  ---      ---       LVL=1
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      010009CCH   BLOCK     CODE     ---       LVL=0
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      0100095FH   BLOCK     CODE     ---       LVL=0
+      ---         BLOCKEND  ---      ---       LVL=0
+
+LX51 LINKER/LOCATER V4.66.87.0                                                        02/19/2022  23:35:29  PAGE 9
+
+
+      01000999H   BLOCK     CODE     ---       LVL=0
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      01000917H   BLOCK     CODE     ---       LVL=0
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      010007D7H   BLOCK     CODE     ---       LVL=0
+      010007E9H   BLOCK     CODE     NEAR LAB  LVL=1
+      00000000H   SYMBOL    ISTK     VOID      i
+      ---         BLOCKEND  ---      ---       LVL=1
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      01000026H   BLOCK     CODE     ---       LVL=0
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      0100084CH   BLOCK     CODE     ---       LVL=0
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      ---         MODULE    ---      ---       WIFI
+
+      ---         MODULE    ---      ---       MYSTRING
+      00000007H   SYMBOL    DATA     VOID      i
+
+      ---         MODULE    ---      ---       MAIN
+      010009F9H   PUBLIC    CODE     ---       IoInit
+      010006B1H   PUBLIC    CODE     ---       main
+
+      010006B1H   BLOCK     CODE     ---       LVL=0
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      010009F9H   BLOCK     CODE     ---       LVL=0
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      ---         MODULE    ---      ---       ?C_STARTUP
+      01000000H   PUBLIC    CODE     ---       ?C_STARTUP
+
+      ---         MODULE    ---      ---       ?C?CLDPTR
+      01000096H   PUBLIC    CODE     ---       ?C?CLDPTR
+
+      ---         MODULE    ---      ---       ?C?CLDOPTR
+      010000AFH   PUBLIC    CODE     ---       ?C?CLDOPTR
+
+      ---         MODULE    ---      ---       ?C?CLDIOPTR
+      010000DCH   PUBLIC    CODE     ---       ?C?CLDIOPTR
+
+      ---         MODULE    ---      ---       ?C?CSTPTR
+      01000113H   PUBLIC    CODE     ---       ?C?CSTPTR
+
+      ---         MODULE    ---      ---       ?C?CSTOPTR
+      01000125H   PUBLIC    CODE     ---       ?C?CSTOPTR
+
+      ---         MODULE    ---      ---       ?C?IMUL
+      01000147H   PUBLIC    CODE     ---       ?C?IMUL
+
+      ---         MODULE    ---      ---       ?C?ILDOPTR
+      01000159H   PUBLIC    CODE     ---       ?C?ILDOPTR
+
+      ---         MODULE    ---      ---       ?C?IILDOPTR
+      01000191H   PUBLIC    CODE     ---       ?C?IILDOPTR
+
+      ---         MODULE    ---      ---       ?C?ISTOPTR
+      010001DEH   PUBLIC    CODE     ---       ?C?ISTOPTR
+
+      ---         MODULE    ---      ---       ?C?ULDIV
+      01000247H   PUBLIC    CODE     ---       ?C?ULDIV
+LX51 LINKER/LOCATER V4.66.87.0                                                        02/19/2022  23:35:29  PAGE 10
+
+
+
+      ---         MODULE    ---      ---       ?C?LSTOPTR
+      010002D9H   PUBLIC    CODE     ---       ?C?LSTOPTR
+
+      ---         MODULE    ---      ---       ?C?LLDOPTR0
+      010002FDH   PUBLIC    CODE     ---       ?C?LLDOPTR0
+
+      ---         MODULE    ---      ---       ?C?OFFXADD
+      0100032DH   PUBLIC    CODE     ---       ?C?OFFXADD
+
+      ---         MODULE    ---      ---       ?C?PLDPTR
+      01000339H   PUBLIC    CODE     ---       ?C?PLDPTR
+
+      ---         MODULE    ---      ---       ?C?PLDOPTR
+      01000359H   PUBLIC    CODE     ---       ?C?PLDOPTR
+
+      ---         MODULE    ---      ---       ?C?PSTOPTR
+      01000389H   PUBLIC    CODE     ---       ?C?PSTOPTR
+
+      ---         MODULE    ---      ---       ?C?ICALL
+      010003E2H   PUBLIC    CODE     ---       ?C?ICALL
+      010003E6H   PUBLIC    CODE     ---       ?C?ICALL2
+
+      ---         MODULE    ---      ---       ?C_IBP
+      0000005AH   PUBLIC    DATA     ---       ?C_IBP
+
+      ---         MODULE    ---      ---       ?C_INIT
+      01000792H   PUBLIC    CODE     ---       ?C_START
+
+      ---         MODULE    ---      ---       ?C?IILDX
+      010003E8H   PUBLIC    CODE     ---       ?C?IILDX
+
+      ---         MODULE    ---      ---       ?C?LLDIDATA0
+      010003FEH   PUBLIC    CODE     ---       ?C?LLDIDATA0
+
+      ---         MODULE    ---      ---       ?C?LLDXDATA0
+      0100040BH   PUBLIC    CODE     ---       ?C?LLDXDATA0
+
+      ---         MODULE    ---      ---       ?C?LLDPDATA0
+      01000417H   PUBLIC    CODE     ---       ?C?LLDPDATA0
+
+      ---         MODULE    ---      ---       ?C?LLDCODE0
+      01000424H   PUBLIC    CODE     ---       ?C?LLDCODE0
+
+      ---         MODULE    ---      ---       ?C?LSTIDATA
+      01000434H   PUBLIC    CODE     ---       ?C?LSTIDATA
+
+      ---         MODULE    ---      ---       ?C?LSTXDATA
+      01000440H   PUBLIC    CODE     ---       ?C?LSTXDATA
+
+      ---         MODULE    ---      ---       ?C?LSTPDATA
+      0100044CH   PUBLIC    CODE     ---       ?C?LSTPDATA
+
+      ---         MODULE    ---      ---       ?C?PLDIDATA
+      01000458H   PUBLIC    CODE     ---       ?C?PLDIDATA
+
+      ---         MODULE    ---      ---       ?C?PSTIDATA
+      01000461H   PUBLIC    CODE     ---       ?C?PSTIDATA
+
+      ---         MODULE    ---      ---       ?C?PLDXDATA
+      0100046AH   PUBLIC    CODE     ---       ?C?PLDXDATA
+
+      ---         MODULE    ---      ---       ?C?PSTXDATA
+      01000473H   PUBLIC    CODE     ---       ?C?PSTXDATA
+
+LX51 LINKER/LOCATER V4.66.87.0                                                        02/19/2022  23:35:29  PAGE 11
+
+
+      ---         MODULE    ---      ---       ?C?PLDPDATA
+      0100047CH   PUBLIC    CODE     ---       ?C?PLDPDATA
+
+      ---         MODULE    ---      ---       ?C?PSTPDATA
+      01000485H   PUBLIC    CODE     ---       ?C?PSTPDATA
+
+      ---         MODULE    ---      ---       ?C?PLDCODE
+      0100048EH   PUBLIC    CODE     ---       ?C?PLDCODE
+
+Program Size: data=92.0 xdata=239 const=298 code=2582
+LX51 RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
